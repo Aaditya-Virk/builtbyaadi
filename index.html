@@ -573,7 +573,7 @@ function toggleTheme(){
 }
 
 /* ── PAGE NAVIGATION ── */
-function showPage(name){
+function showPage(name, skipHistory){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
   document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active')});
   document.getElementById('page-'+name).classList.add('active');
@@ -591,7 +591,22 @@ function showPage(name){
       });
     }
   }
+  /* push a history entry so the browser back button works */
+  if(!skipHistory){
+    try{history.pushState({page:name},'','#'+name);}catch(e){}
+  }
 }
+
+/* handle browser back/forward */
+window.addEventListener('popstate', function(e){
+  var state = e.state;
+  if(!state){ showPage('home', true); return; }
+  if(state.page === 'post' && state.postId){
+    openPost(state.postId, true);
+  } else {
+    showPage(state.page || 'home', true);
+  }
+});
 
 /* ── SCROLL: progress bar + back-to-top ── */
 function updateProgressBar(){
@@ -665,7 +680,7 @@ function filterProjects(btn,cat){
 /* ── POST DETAIL ── */
 var currentPostId=null;
 
-function openPost(id){
+function openPost(id, skipHistory){
   var post=null;
   getAllPosts().forEach(function(p){if(p.id===id)post=p});
   if(!post)return;
@@ -694,6 +709,7 @@ function openPost(id){
   document.getElementById('page-post').classList.add('active');
   window.scrollTo(0,0);
   updateProgressBar();
+  if(!skipHistory){try{history.pushState({page:'post',postId:id},'','#post-'+id);}catch(e){}}
 }
 
 /* ── COPY LINK ── */
@@ -820,6 +836,8 @@ renderSkills();
 renderFeatured();
 renderProjects('all');
 fetchYouTubeVideos();
+/* seed initial history state so first back press stays on site */
+try{history.replaceState({page:'home'},'','#home');}catch(e){}
 </script>
 </body>
 </html>
