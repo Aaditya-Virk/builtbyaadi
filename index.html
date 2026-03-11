@@ -206,7 +206,10 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);display:flex;align-i
 .contact-links{display:flex;flex-direction:column;gap:10px}
 .contact-link-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .15s}
 .contact-link-card:hover{border-color:var(--accent);transform:translateX(4px)}
-.contact-icon{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.contact-icon{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;color:var(--accent)}
+[data-theme="dark"] .contact-icon{background:#1a2540;border-color:#4f8ef7;color:#c8d8ff}
+[data-theme="dark"] .contact-info h4{color:#eaecf4}
+[data-theme="dark"] .contact-info p{color:#a0aec8}
 .contact-info h4{font-size:14px;font-weight:600;color:var(--ink)}
 .contact-info p{font-size:12px;color:var(--muted);margin-top:1px}
 .contact-form{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px}
@@ -533,13 +536,13 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
         <h1>Let's <span style="color:var(--accent);font-style:italic">talk.</span></h1>
         <p>Have a project idea, collab proposal, or just want to say hi? Always happy to hear from fellow makers.</p>
         <div class="contact-links">
-          <a href="/cdn-cgi/l/email-protection#e486918d8890869d8585808da48389858d88ca878b89" class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p><span class="__cf_email__" data-cfemail="f694839f9a82948f9797929fb6919b979f9ad895999b">[email&#160;protected]</span></p></div></a>
+          <a href="mailto:builtbyaadi@gmail.com" class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p>builtbyaadi@gmail.com</p></div></a>
           <a href="https://www.instagram.com/builtbyaadi_/" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">📸</div><div class="contact-info"><h4>Instagram</h4><p>@builtbyaadi_</p></div></a>
           <a href="https://github.com/Aaditya-Virk" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🐙</div><div class="contact-info"><h4>GitHub</h4><p>github.com/Aaditya-Virk</p></div></a>
           <a href="https://www.youtube.com/@BuiltByAadiV" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">▶️</div><div class="contact-info"><h4>YouTube</h4><p>@BuiltByAadiV</p></div></a>
           <a href="https://www.tiktok.com/@builtbyaadi" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🎵</div><div class="contact-info"><h4>TikTok</h4><p>@builtbyaadi</p></div></a>
           <a href="https://www.linkedin.com/in/aaditya-virk-116190274/" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">💼</div><div class="contact-info"><h4>LinkedIn</h4><p>aaditya-virk</p></div></a>
-          <a href="https://www.tiktok.com/@builtbyaadi" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🎵</div><div class="contact-info"><h4>TikTok</h4><p>@builtbyaadi</p></div></a>
+          
         </div>
       </div>
       <div class="contact-form">
@@ -939,8 +942,8 @@ function fetchYouTubeVideos(){
 /* ── LOAD ANIMATIONS — runs once only on first page open ── */
 var hasAnimated = false;
 (function(){
-  /* 1. Wrap each letter of the logo in a .l span, dot gets .dot */
   var logo = document.getElementById('nav-logo');
+  if(!logo) return;
   var text = 'BuiltByAadi';
   var lettered = text.split('').map(function(ch, i){
     return '<span class="l" style="animation-delay:'+(i*0.055)+'s">'+ch+'</span>';
@@ -948,7 +951,6 @@ var hasAnimated = false;
   var dotDelay = (text.length * 0.055 + 0.15).toFixed(2);
   logo.innerHTML = lettered + '<span class="dot" style="animation-delay:'+dotDelay+'s">.</span>';
 
-  /* 2. Stagger nav links and theme button with .nav-anim class */
   var navBase = parseFloat(dotDelay) + 0.1;
   document.querySelectorAll('.nav-links .nav-link').forEach(function(el, i){
     el.classList.add('nav-anim');
@@ -957,11 +959,21 @@ var hasAnimated = false;
   var themeBtn = document.querySelector('.nav-controls .theme-btn');
   if(themeBtn){ themeBtn.classList.add('nav-anim'); themeBtn.style.animationDelay = (navBase + 4 * 0.07)+'s'; }
 
-  /* 3. Hero elements get .hero-animate — only on first load */
   var heroBase = navBase + 0.2;
-  var heroSelectors = ['.hero-eyebrow','.hero-title','.hero-desc','.btn-row','.hero-visual'];
-  heroSelectors.forEach(function(sel, i){
+  ['.hero-eyebrow','.hero-title','.hero-desc','.btn-row','.hero-visual'].forEach(function(sel, i){
     var el = document.querySelector(sel);
     if(el){ el.classList.add('hero-animate'); el.style.animationDelay = (heroBase + i * 0.1)+'s'; }
   });
-}());
+  hasAnimated = true;
+})();
+
+/* ── INIT ── */
+updateStats();
+renderSkills();
+renderFeatured();
+renderProjects('all');
+fetchYouTubeVideos();
+try{history.replaceState({page:'home'},'','#home');}catch(e){}
+</script>
+</body>
+</html>
