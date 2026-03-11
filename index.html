@@ -30,9 +30,9 @@
   --ease:.25s cubic-bezier(.4,0,.2,1);
 }
 [data-theme="light"]{
-  --bg:#fafaf8;--bg2:#f2f2ee;--surface:#ffffff;--ink:#111218;--ink2:#3d3f4e;
-  --muted:#9496a8;--border:#e4e4ec;--accent:#2d5be3;--accent2:#1a45c9;
-  --accent-soft:#edf1fd;--shadow:0 2px 16px rgba(20,24,60,.07);
+  --bg:#f5f0e8;--bg2:#ede8de;--surface:#fdf9f3;--ink:#1a1714;--ink2:#3d3830;
+  --muted:#8c8475;--border:#ddd5c4;--accent:#2d5be3;--accent2:#1a45c9;
+  --accent-soft:#eaf0fd;--shadow:0 2px 16px rgba(30,20,10,.08);
 }
 html{scroll-behavior:smooth}
 body{font-family:'Epilogue',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;transition:background var(--ease),color var(--ease);overflow-x:hidden}
@@ -299,6 +299,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
     <button class="nav-link active" onclick="showPage('home')">Home</button>
     <button class="nav-link" onclick="showPage('about')">About</button>
     <button class="nav-link" onclick="showPage('projects')">Projects</button>
+    <button class="nav-link" onclick="showPage('blog')">Blog</button>
     <button class="nav-link" onclick="showPage('contact')">Contact</button>
   </div>
   <div class="nav-controls">
@@ -420,7 +421,6 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
       <button class="filter-btn" onclick="filterProjects(this,'3d')">3D Printing</button>
       <button class="filter-btn" onclick="filterProjects(this,'firmware')">Firmware</button>
       <button class="filter-btn" onclick="filterProjects(this,'guide')">Guides</button>
-      <button class="filter-btn" onclick="filterProjects(this,'blog')">Blog</button>
     </div>
     <div class="all-projects-grid" id="projects-grid"></div>
   </div>
@@ -435,6 +435,32 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
   </footer>
 </div>
 
+<!-- BLOG -->
+<div class="page" id="page-blog">
+  <div class="container">
+    <div class="projects-hero">
+      <h1>Blog <span style="color:var(--accent)">&amp; Writing</span></h1>
+      <p>Guides, reflections, and lessons learned along the way. The stuff I wish existed when I started.</p>
+    </div>
+    <div class="all-projects-grid" id="blog-grid">
+      <div style="grid-column:1/-1;padding:60px 0;text-align:center">
+        <div style="font-size:40px;margin-bottom:16px">✍️</div>
+        <p style="font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);margin-bottom:10px">First post coming soon</p>
+        <p style="font-size:14px;color:var(--muted);font-weight:300">Add entries to the <code style="font-size:13px;background:var(--bg2);padding:2px 8px;border-radius:6px;color:var(--accent)">BLOG_POSTS</code> array to publish here.</p>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-logo">BuiltByAadi<span>.</span></div>
+    <div class="footer-copy">© 2025 · Made with curiosity</div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="showPage('home')">Home</button>
+      <button class="footer-link" onclick="showPage('projects')">Projects</button>
+      <button class="footer-link" onclick="showPage('contact')">Contact</button>
+    </div>
+  </footer>
+</div>
+
 <!-- CONTACT -->
 <!-- ── FORMSPREE: replace YOUR_FORM_ID with the ID from formspree.io ── -->
 <div class="page" id="page-contact">
@@ -444,7 +470,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
         <h1>Let's <span style="color:var(--accent);font-style:italic">talk.</span></h1>
         <p>Have a project idea, collab proposal, or just want to say hi? Always happy to hear from fellow makers.</p>
         <div class="contact-links">
-          <div class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p>hello@builtbyaadi.com</p></div></div>
+          <div class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="96fef3fafaf9d6f4e3fffae2f4eff7f7f2ffb8f5f9fb">[email&#160;protected]</a></p></div></div>
           <div class="contact-link-card"><div class="contact-icon">🐦</div><div class="contact-info"><h4>Twitter / X</h4><p>@yourhandle</p></div></div>
           <div class="contact-link-card"><div class="contact-icon">🐙</div><div class="contact-info"><h4>GitHub</h4><p>github.com/Aaditya-Virk</p></div></div>
           <div class="contact-link-card"><div class="contact-icon">💼</div><div class="contact-info"><h4>LinkedIn</h4><p>linkedin.com/in/yourname</p></div></div>
@@ -493,9 +519,9 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
 <div class="page" id="page-post">
   <div class="container">
     <div class="post-page">
-      <button class="post-back" onclick="showPage('projects')">
+      <button class="post-back" id="post-back-top" onclick="goBackFromPost()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to Projects
+        <span id="post-back-label">Back to Projects</span>
       </button>
       <div class="post-header">
         <div class="post-tag" id="post-view-tag"></div>
@@ -517,9 +543,9 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
       <div class="post-hero-emoji" id="post-view-emoji"></div>
       <div class="post-body-text" id="post-view-body"></div>
       <div class="post-footer-nav">
-        <button class="post-back" onclick="showPage('projects')">
+        <button class="post-back" onclick="goBackFromPost()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          All Projects
+          <span id="post-back-label-bottom">Back to Projects</span>
         </button>
       </div>
     </div>
@@ -535,7 +561,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
   </footer>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ================================================================
    EDIT HERE — add new projects, blog posts, and skills
    ================================================================ */
@@ -577,11 +603,12 @@ function showPage(name, skipHistory){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
   document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active')});
   document.getElementById('page-'+name).classList.add('active');
-  var idx=['home','about','projects','contact'].indexOf(name);
+  var idx=['home','about','projects','blog','contact'].indexOf(name);
   if(idx>-1) document.querySelectorAll('.nav-link')[idx].classList.add('active');
   window.scrollTo(0,0);
   updateProgressBar();
   if(name==='projects') renderProjects('all');
+  if(name==='blog') renderBlog();
   if(name==='home'){
     renderFeatured(); fetchYouTubeVideos();
     if(hasAnimated){
@@ -659,6 +686,30 @@ function renderFeatured(){
 /* ── ALL PROJECTS GRID ── */
 function getAllPosts(){ return PROJECTS.concat(BLOG_POSTS); }
 
+/* ── BLOG grid ── */
+function renderBlog(){
+  var grid=document.getElementById('blog-grid');
+  if(!BLOG_POSTS.length){
+    grid.innerHTML='<div style="grid-column:1/-1;padding:60px 0;text-align:center">'+
+      '<div style="font-size:40px;margin-bottom:16px">✍️</div>'+
+      '<p style="font-family:\'Playfair Display\',serif;font-size:22px;color:var(--ink);margin-bottom:10px">First post coming soon</p>'+
+      '<p style="font-size:14px;color:var(--muted);font-weight:300">Add entries to the <code style="font-size:13px;background:var(--bg2);padding:2px 8px;border-radius:6px;color:var(--accent)">BLOG_POSTS</code> array to publish here.</p>'+
+    '</div>';
+    return;
+  }
+  grid.innerHTML=BLOG_POSTS.map(function(p,i){
+    return '<div class="pcard" style="animation-delay:'+(i*.05)+'s" onclick="openPost(\''+p.id+'\')">'+
+      '<div class="pcard-thumb">'+p.emoji+'</div>'+
+      '<div class="pcard-body">'+
+        '<div class="pcard-tag">'+p.tag+'</div>'+
+        '<div class="pcard-title">'+p.title+'</div>'+
+        '<div class="pcard-desc">'+p.desc+'</div>'+
+      '</div>'+
+      '<div class="pcard-meta"><span class="pcard-date">'+p.date+'</span><span class="pcard-read">'+p.read+' →</span></div>'+
+    '</div>';
+  }).join('');
+}
+
 function renderProjects(filter){
   var list=getAllPosts();
   if(filter!=='all') list=list.filter(function(p){return p.cat.indexOf(filter)!==-1});
@@ -679,12 +730,22 @@ function filterProjects(btn,cat){
 
 /* ── POST DETAIL ── */
 var currentPostId=null;
+var postSource='projects'; /* tracks which page the user came from */
+
+function goBackFromPost(){ showPage(postSource); }
 
 function openPost(id, skipHistory){
   var post=null;
   getAllPosts().forEach(function(p){if(p.id===id)post=p});
   if(!post)return;
   currentPostId=id;
+
+  /* determine source page from post type */
+  var isBlog = BLOG_POSTS.some(function(p){ return p.id===id; });
+  postSource = isBlog ? 'blog' : 'projects';
+  var backLabel = isBlog ? 'Back to Blog' : 'Back to Projects';
+  document.getElementById('post-back-label').textContent = backLabel;
+  document.getElementById('post-back-label-bottom').textContent = backLabel;
 
   document.getElementById('post-view-tag').textContent=post.tag;
   document.getElementById('post-view-title').textContent=post.title;
@@ -836,7 +897,6 @@ renderSkills();
 renderFeatured();
 renderProjects('all');
 fetchYouTubeVideos();
-/* seed initial history state so first back press stays on site */
 try{history.replaceState({page:'home'},'','#home');}catch(e){}
 </script>
 </body>
