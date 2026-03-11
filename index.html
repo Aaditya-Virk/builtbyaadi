@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuiltByAadi — Building things that shouldn't exist yet</title>
+<title>BuiltByAadi — Building things that should already exist</title>
 
 <!-- ── OPEN GRAPH ── -->
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="https://aaditya-virk.github.io/builtbyaadi">
 <meta property="og:title"       content="BuiltByAadi">
-<meta property="og:description" content="Building things that shouldn't exist yet. Hardware, 3D printing, firmware, and build logs by Aadi Virk.">
+<meta property="og:description" content="Building things that should already exist. Hardware, 3D printing, firmware, and build logs by Aadi Virk.">
 <meta property="og:image"       content="https://aaditya-virk.github.io/builtbyaadi/og-image.png">
 <meta name="twitter:card"       content="summary_large_image">
 <meta name="twitter:title"      content="BuiltByAadi">
-<meta name="twitter:description"content="Building things that shouldn't exist yet.">
+<meta name="twitter:description"content="Building things that should already exist.">
 <meta name="twitter:image"      content="https://aaditya-virk.github.io/builtbyaadi/og-image.png">
 <meta name="description"        content="Hardware projects, 3D printing, firmware, and build logs by Aadi Virk.">
 
 <!-- ── FAVICON — inline SVG as data URI ── -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c0f1a'/%3E%3Ctext x='5' y='24' font-family='Georgia,serif' font-size='22' font-weight='700' fill='%234f8ef7'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c0f1a'/%3E%3Ctext x='50%25' y='50%25' font-family='Georgia,serif' font-size='13' font-weight='700' fill='%234f8ef7' text-anchor='middle' dominant-baseline='central'%3EAV%3C/text%3E%3C/svg%3E">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -41,17 +41,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 /* ── SCROLL PROGRESS BAR ── */
 #progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:9998;transition:width .05s linear;opacity:0;pointer-events:none}
 #progress-bar.visible{opacity:1}
-
-/* ── MOBILE MENU ── */
-function toggleMenu(){
-  var menu=document.getElementById('mobile-menu');
-  var overlay=document.getElementById('mobile-overlay');
-  var hamburger=document.getElementById('hamburger');
-  var open=menu.classList.toggle('open');
-  overlay.classList.toggle('open',open);
-  hamburger.classList.toggle('open',open);
-  document.body.style.overflow=open?'hidden':'';
-}
 
 /* ── LOAD ANIMATIONS ── */
 @keyframes logoReveal{from{opacity:0;filter:blur(4px);transform:translateY(-6px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
@@ -378,7 +367,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
   </nav>
   <div class="mobile-menu-footer">
     <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);margin-bottom:6px">BuiltByAadi<span style="color:var(--accent)">.</span></div>
-    <div style="font-size:12px;color:var(--muted)">Building things that shouldn't exist yet.</div>
+    <div style="font-size:12px;color:var(--muted)">Building things that should already exist.</div>
   </div>
 </div>
 <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMenu()"></div>
@@ -389,7 +378,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
     <div class="hero">
       <div>
         <div class="hero-eyebrow">Builder · Designer · Maker</div>
-        <h1 class="hero-title">Building things that <em>shouldn't</em> exist yet.</h1>
+        <h1 class="hero-title">Building things that &nbsp;<em>should</em> already exist.</h1>
         <p class="hero-desc">I design and build hardware projects, write about the process, and share everything I learn along the way. From PCBs to 3D printing to firmware — all from scratch.</p>
         <div class="btn-row">
           <button class="btn-primary" onclick="showPage('projects')">See My Projects →</button>
@@ -447,10 +436,11 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
       <div class="about-photo">
         <div class="about-photo-frame">🧑‍💻</div>
         <div class="about-social">
-          <div class="social-chip">🐦 Twitter</div>
-          <div class="social-chip">💼 LinkedIn</div>
-          <div class="social-chip">🐙 GitHub</div>
-          <div class="social-chip">📸 Instagram</div>
+          <a href="https://github.com/Aaditya-Virk" target="_blank" rel="noopener" class="social-chip">🐙 GitHub</a>
+          <a href="https://www.youtube.com/@BuiltByAadiV" target="_blank" rel="noopener" class="social-chip">▶️ YouTube</a>
+          <a href="https://www.tiktok.com/@builtbyaadi" target="_blank" rel="noopener" class="social-chip">🎵 TikTok</a>
+          <a href="https://www.instagram.com/builtbyaadi_/" target="_blank" rel="noopener" class="social-chip">📸 Instagram</a>
+          <a href="https://www.linkedin.com/in/aaditya-virk-116190274/" target="_blank" rel="noopener" class="social-chip">💼 LinkedIn</a>
         </div>
       </div>
       <div>
@@ -543,15 +533,18 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
         <h1>Let's <span style="color:var(--accent);font-style:italic">talk.</span></h1>
         <p>Have a project idea, collab proposal, or just want to say hi? Always happy to hear from fellow makers.</p>
         <div class="contact-links">
-          <div class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="96fef3fafaf9d6f4e3fffae2f4eff7f7f2ffb8f5f9fb">[email&#160;protected]</a></p></div></div>
-          <div class="contact-link-card"><div class="contact-icon">🐦</div><div class="contact-info"><h4>Twitter / X</h4><p>@yourhandle</p></div></div>
-          <div class="contact-link-card"><div class="contact-icon">🐙</div><div class="contact-info"><h4>GitHub</h4><p>github.com/Aaditya-Virk</p></div></div>
-          <div class="contact-link-card"><div class="contact-icon">💼</div><div class="contact-info"><h4>LinkedIn</h4><p>linkedin.com/in/yourname</p></div></div>
+          <a href="/cdn-cgi/l/email-protection#e486918d8890869d8585808da48389858d88ca878b89" class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p><span class="__cf_email__" data-cfemail="f694839f9a82948f9797929fb6919b979f9ad895999b">[email&#160;protected]</span></p></div></a>
+          <a href="https://www.instagram.com/builtbyaadi_/" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">📸</div><div class="contact-info"><h4>Instagram</h4><p>@builtbyaadi_</p></div></a>
+          <a href="https://github.com/Aaditya-Virk" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🐙</div><div class="contact-info"><h4>GitHub</h4><p>github.com/Aaditya-Virk</p></div></a>
+          <a href="https://www.youtube.com/@BuiltByAadiV" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">▶️</div><div class="contact-info"><h4>YouTube</h4><p>@BuiltByAadiV</p></div></a>
+          <a href="https://www.tiktok.com/@builtbyaadi" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🎵</div><div class="contact-info"><h4>TikTok</h4><p>@builtbyaadi</p></div></a>
+          <a href="https://www.linkedin.com/in/aaditya-virk-116190274/" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">💼</div><div class="contact-info"><h4>LinkedIn</h4><p>aaditya-virk</p></div></a>
+          <a href="https://www.tiktok.com/@builtbyaadi" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🎵</div><div class="contact-info"><h4>TikTok</h4><p>@builtbyaadi</p></div></a>
         </div>
       </div>
       <div class="contact-form">
         <h3>Send a message</h3>
-        <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" onsubmit="handleFormSubmit(event)">
+        <form id="contact-form" action="https://formspree.io/f/mbdzdewo" method="POST" onsubmit="handleFormSubmit(event)">
           <div class="form-row">
             <div class="form-group"><label>First name</label><input type="text" name="first_name" placeholder="Alex" required></div>
             <div class="form-group"><label>Last name</label><input type="text" name="last_name" placeholder="Smith"></div>
@@ -634,7 +627,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
   </footer>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 /* ================================================================
    EDIT HERE — add new projects, blog posts, and skills
    ================================================================ */
@@ -658,12 +651,23 @@ var SKILLS = [
 ];
 
 /* YouTube channel ID — find it: youtube.com → profile → Settings → Advanced settings */
-var YT_CHANNEL_ID = 'YOUR_CHANNEL_ID';
+var YT_CHANNEL_ID = 'UCKVnnsvIPKKkvjsuzu2N-dA';
 var YT_MAX = 3;
 
 /* ================================================================
    AUTOMATIC FROM HERE — no need to edit below
    ================================================================ */
+
+/* ── MOBILE MENU ── */
+function toggleMenu(){
+  var menu=document.getElementById('mobile-menu');
+  var overlay=document.getElementById('mobile-overlay');
+  var hamburger=document.getElementById('hamburger');
+  var open=menu.classList.toggle('open');
+  overlay.classList.toggle('open',open);
+  hamburger.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+}
 
 /* ── THEME ── */
 function toggleTheme(){
@@ -932,17 +936,6 @@ function fetchYouTubeVideos(){
     .catch(function(){grid.innerHTML='<div class="yt-error">Couldn\'t load videos right now.</div>'});
 }
 
-/* ── MOBILE MENU ── */
-function toggleMenu(){
-  var menu=document.getElementById('mobile-menu');
-  var overlay=document.getElementById('mobile-overlay');
-  var hamburger=document.getElementById('hamburger');
-  var open=menu.classList.toggle('open');
-  overlay.classList.toggle('open',open);
-  hamburger.classList.toggle('open',open);
-  document.body.style.overflow=open?'hidden':'';
-}
-
 /* ── LOAD ANIMATIONS — runs once only on first page open ── */
 var hasAnimated = false;
 (function(){
@@ -971,17 +964,4 @@ var hasAnimated = false;
     var el = document.querySelector(sel);
     if(el){ el.classList.add('hero-animate'); el.style.animationDelay = (heroBase + i * 0.1)+'s'; }
   });
-
-  hasAnimated = true;
-})();
-
-/* ── INIT ── */
-updateStats();
-renderSkills();
-renderFeatured();
-renderProjects('all');
-fetchYouTubeVideos();
-try{history.replaceState({page:'home'},'','#home');}catch(e){}
-</script>
-</body>
-</html>
+}());
