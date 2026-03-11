@@ -1,1256 +1,825 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
-
-  <!-- ============================================================
-    META & PAGE SETUP
-    - charset: UTF-8 for all characters including em dashes etc.
-    - viewport: makes the site scale correctly on mobile
-    - title: what shows in the browser tab
-  ============================================================ -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BuiltByAadi</title>
-
-  <!-- ============================================================
-    FONTS
-    - Playfair Display: used for all headings and logo
-    - Epilogue: used for all body text, buttons, labels
-    Both loaded from Google Fonts
-  ============================================================ -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-  <style>
-
-    /* ============================================================
-      RESET
-      Removes default browser margin/padding and sets box-sizing
-      so padding is included inside element widths
-    ============================================================ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-
-    /* ============================================================
-      DESIGN TOKENS — LIGHT MODE
-      All colors, spacing, and animation values stored as CSS
-      variables so they can be changed in one place.
-
-      --bg:          main page background
-      --bg2:         slightly darker background for hover states
-      --surface:     card/panel backgrounds
-      --ink:         primary text color
-      --ink2:        secondary text color (body text)
-      --muted:       placeholder text, labels, dates
-      --border:      all borders and dividers
-      --accent:      rose gold — used for highlights, links, tags
-      --accent2:     darker rose gold for hover states
-      --accent-soft: very light rose tint for backgrounds
-      --nav-h:       navbar height (used to offset page content)
-      --shadow:      card drop shadows
-      --ease:        standard animation easing curve
-    ============================================================ */
-    :root {
-      --bg:          #f7f6f2;
-      --bg2:         #eeecea;
-      --surface:     #ffffff;
-      --ink:         #18181b;
-      --ink2:        #3f3f46;
-      --muted:       #a1a1aa;
-      --border:      #e4e4e7;
-      --accent:      #b76e79;
-      --accent2:     #9e5a64;
-      --accent-soft: #f9eced;
-      --nav-h:       68px;
-      --shadow:      0 2px 12px rgba(0,0,0,0.07);
-      --ease:        0.25s cubic-bezier(0.4,0,0.2,1);
-    }
-
-
-    /* ============================================================
-      DESIGN TOKENS — DARK MODE
-      When data-theme="dark" is set on the <html> element,
-      these values override the light mode tokens above.
-      Every element using var(--bg), var(--ink) etc. will
-      automatically update — no duplicate CSS needed.
-    ============================================================ */
-    [data-theme="dark"] {
-      --bg:          #111110;
-      --bg2:         #1c1c1a;
-      --surface:     #1e1e1c;
-      --ink:         #f4f4f0;
-      --ink2:        #c4c4bc;
-      --muted:       #6b6b63;
-      --border:      #2e2e2a;
-      --accent:      #c9858e;
-      --accent2:     #b76e79;
-      --accent-soft: #2a1a1c;
-      --shadow:      0 2px 16px rgba(0,0,0,0.4);
-    }
-
-
-    /* ============================================================
-      BASE STYLES
-    ============================================================ */
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Epilogue', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      /* Smooth transition when dark mode toggles */
-      transition: background var(--ease), color var(--ease);
-      overflow-x: hidden;
-    }
-
-    /* Subtle grain texture overlay on entire page
-       pointer-events: none so it doesn't block clicks
-       z-index: 9999 so it sits above everything */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
-      opacity: 0.025;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 200px 200px;
-    }
-
-
-    /* ============================================================
-      NAVBAR
-      Fixed at top of screen — stays visible on scroll.
-      clamp(20px, 5vw, 80px) = responsive padding:
-        min 20px on mobile, scales up, max 80px on desktop
-    ============================================================ */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: var(--nav-h);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 clamp(20px, 5vw, 80px);
-      background: var(--bg); border-bottom: 1px solid var(--border);
-      z-index: 100; transition: background var(--ease), border-color var(--ease);
-    }
-
-    /* Logo — Playfair Display, accent dot */
-    .nav-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px; font-weight: 700; color: var(--ink);
-      cursor: pointer; border: none; background: none;
-      letter-spacing: -0.3px; transition: color var(--ease);
-    }
-    .nav-logo span { color: var(--accent); } /* The rose gold dot */
-
-    /* Nav links row */
-    .nav-links { display: flex; align-items: center; gap: 4px; }
-
-    /* Individual nav link buttons */
-    .nav-link {
-      padding: 7px 15px; border-radius: 10px; border: none;
-      background: transparent; font-family: 'Epilogue', sans-serif;
-      font-size: 14px; font-weight: 500; color: var(--muted);
-      cursor: pointer; transition: all 0.15s;
-    }
-    /* Hover and active state — slight background tint */
-    .nav-link:hover, .nav-link.active { color: var(--ink); background: var(--bg2); }
-
-
-    /* ============================================================
-      DARK MODE SLIDER
-      Three parts: "Light" label, track, "Dark" label
-      The thumb slides inside the track using transform: translateX
-      The active label gets bold ink color, inactive gets muted
-    ============================================================ */
-    .theme-slider {
-      display: flex; align-items: center; gap: 8px;
-      cursor: pointer; user-select: none;
-    }
-
-    .slider-label {
-      font-family: 'Epilogue', sans-serif; font-size: 12px; font-weight: 500;
-      color: var(--muted); transition: color var(--ease); min-width: 28px;
-    }
-    .slider-label.left { text-align: right; }
-    .slider-label.right { text-align: left; }
-
-    /* Bold the active label based on current theme */
-    [data-theme="light"] .slider-label.left  { color: var(--ink); font-weight: 600; }
-    [data-theme="dark"]  .slider-label.right { color: var(--ink); font-weight: 600; }
-
-    /* The pill-shaped track */
-    .slider-track {
-      width: 44px; height: 24px; border-radius: 12px;
-      background: var(--border); position: relative;
-      transition: background 0.3s ease; flex-shrink: 0;
-      border: 1px solid var(--border);
-    }
-    /* Track turns rose gold in dark mode */
-    [data-theme="dark"] .slider-track { background: var(--accent); border-color: var(--accent); }
-
-    /* The white circle that slides */
-    .slider-thumb {
-      position: absolute; top: 3px; left: 3px;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-      /* Spring animation — bouncy overshoot effect */
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    /* Slide thumb to the right in dark mode */
-    [data-theme="dark"] .slider-thumb { transform: translateX(20px); }
-
-
-    /* ============================================================
-      PAGE SYSTEM
-      Only one .page is visible at a time.
-      .active class is toggled by showPage() in JavaScript.
-      fadeUp animation plays each time a page becomes active.
-      padding-top offsets the fixed navbar so content isn't hidden behind it.
-    ============================================================ */
-    .page { display: none; padding-top: var(--nav-h); animation: fadeUp 0.35s ease both; }
-    .page.active { display: block; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Max width container — centers content on wide screens */
-    .container { max-width: 1060px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 80px); }
-
-
-    /* ============================================================
-      HOME PAGE — HERO SECTION
-      Two column grid: left = text, right = image card
-      clamp() on font size = fluid typography that scales with viewport
-    ============================================================ */
-    .hero {
-      padding: 90px 0 70px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
-    }
-
-    /* Small uppercase label above the heading */
-    .hero-eyebrow {
-      font-size: 11px; font-weight: 600; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
-    }
-
-    /* Main hero heading — Playfair Display, large */
-    .hero-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(38px, 4.5vw, 58px);
-      line-height: 1.08; letter-spacing: -1px; margin-bottom: 20px;
-    }
-    /* Italic rose gold word inside the heading */
-    .hero-title em { font-style: italic; color: var(--accent); }
-
-    /* Body paragraph under the heading */
-    .hero-desc {
-      font-size: 16px; line-height: 1.75; color: var(--ink2);
-      font-weight: 300; margin-bottom: 34px;
-    }
-
-    /* Wrapper for the two CTA buttons */
-    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    /* PRIMARY BUTTON — dark background, light text */
-    .btn-primary {
-      padding: 12px 24px; border-radius: 12px; border: none;
-      background: var(--ink); color: var(--bg);
-      font-family: 'Epilogue', sans-serif; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .btn-primary:hover {
-      background: var(--accent); transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(183,110,121,0.3);
-    }
-
-    /* SECONDARY BUTTON — transparent, bordered */
-    .btn-secondary {
-      padding: 12px 24px; border-radius: 12px; border: 1.5px solid var(--border);
-      background: transparent; color: var(--ink); font-family: 'Epilogue', sans-serif;
-      font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s;
-    }
-    .btn-secondary:hover { border-color: var(--ink); background: var(--bg2); }
-
-    /* Right column image card */
-    .hero-img-card {
-      aspect-ratio: 4/3; border-radius: 24px; border: 1px solid var(--border);
-      overflow: hidden; box-shadow: var(--shadow);
-      display: flex; align-items: center; justify-content: center; position: relative;
-    }
-
-    /* Placeholder gradient shown before a real photo is added */
-    .hero-placeholder {
-      width: 100%; height: 100%;
-      background: linear-gradient(135deg, var(--bg2), var(--border));
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 10px; color: var(--muted); font-size: 13px;
-    }
-    .hero-placeholder .icon { font-size: 48px; opacity: 0.5; }
-
-    /* "Currently building" badge in bottom left of image card */
-    .hero-badge {
-      position: absolute; bottom: 18px; left: 18px;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      padding: 9px 14px; font-size: 12px; font-weight: 500; color: var(--ink2);
-      box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
-    }
-
-    /* Pulsing green dot inside the badge */
-    .pulse {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #22c55e; animation: pulse 2s infinite; flex-shrink: 0;
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.6; transform: scale(1.2); }
-    }
-
-
-    /* ============================================================
-      HOME PAGE — STATS ROW
-      3 equal cards showing project count, posts, skills
-    ============================================================ */
-    .stats-row {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 16px; margin-bottom: 72px;
-    }
-
-    .stat-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 24px; transition: all 0.2s;
-    }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--accent); }
-
-    /* Large Playfair number */
-    .stat-num {
-      font-family: 'Playfair Display', serif; font-size: 36px;
-      font-weight: 700; color: var(--ink); letter-spacing: -1px;
-    }
-    /* The + suffix in rose gold */
-    .stat-num span { color: var(--accent); }
-
-    /* Small label below the number */
-    .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
-
-
-    /* ============================================================
-      SECTION HEADER (used for Featured Projects and other sections)
-      Row with title on left and "See all →" on right
-    ============================================================ */
-    .section-header {
-      display: flex; justify-content: space-between;
-      align-items: flex-end; margin-bottom: 24px;
-    }
-    .section-title {
-      font-family: 'Playfair Display', serif; font-size: 26px;
-      color: var(--ink); letter-spacing: -0.3px;
-    }
-    .see-all {
-      font-size: 13px; font-weight: 500; color: var(--accent);
-      cursor: pointer; border: none; background: none;
-      font-family: 'Epilogue', sans-serif; transition: color 0.15s;
-    }
-    .see-all:hover { color: var(--accent2); }
-
-
-    /* ============================================================
-      HOME PAGE — FEATURED PROJECT CARDS (3 cards)
-    ============================================================ */
-    .projects-grid {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 18px; margin-bottom: 72px;
-    }
-
-    .project-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.2s;
-    }
-    .project-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(183,110,121,0.12);
-      border-color: var(--accent);
-    }
-    [data-theme="dark"] .project-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
-
-    /* Thumbnail area — gradient placeholder, replace with real image later */
-    .project-thumb {
-      aspect-ratio: 16/9;
-      background: linear-gradient(135deg, var(--bg2), var(--border));
-      display: flex; align-items: center; justify-content: center; font-size: 36px;
-    }
-
-    /* Card body — tag, title, description */
-    .project-body { padding: 16px 18px; }
-
-    .project-tag {
-      font-size: 11px; font-weight: 600; letter-spacing: 1px;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 7px;
-    }
-    .project-title {
-      font-family: 'Playfair Display', serif; font-size: 17px;
-      color: var(--ink); line-height: 1.3; margin-bottom: 7px;
-    }
-    .project-desc { font-size: 13px; color: var(--muted); line-height: 1.6; font-weight: 300; }
-
-    /* Card footer — date on left, arrow on right */
-    .project-footer {
-      padding: 11px 18px; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .project-date { font-size: 12px; color: var(--muted); }
-    .project-arrow { color: var(--accent); font-size: 15px; transition: transform 0.15s; }
-    .project-card:hover .project-arrow { transform: translateX(4px); }
-
-
-    /* ============================================================
-      HOME PAGE — NEWSLETTER BANNER
-      Dark background section with email signup
-      ::before and ::after are decorative radial gradient blobs
-    ============================================================ -->
-    ============================================================ */
-    .newsletter {
-      background: var(--ink); border-radius: 24px;
-      padding: 52px; text-align: center; margin-bottom: 72px;
-      position: relative; overflow: hidden;
-    }
-    .newsletter::before {
-      content: ''; position: absolute; top: -60px; right: -60px;
-      width: 240px; height: 240px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(183,110,121,0.3), transparent 70%);
-    }
-    .newsletter::after {
-      content: ''; position: absolute; bottom: -80px; left: -40px;
-      width: 200px; height: 200px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(183,110,121,0.15), transparent 70%);
-    }
-    .newsletter h2 {
-      font-family: 'Playfair Display', serif; font-size: 30px;
-      color: #f4f4f0; margin-bottom: 10px; position: relative; z-index: 1;
-    }
-    .newsletter p {
-      color: #a1a1aa; font-size: 15px; margin-bottom: 26px;
-      position: relative; z-index: 1; font-weight: 300;
-    }
-    .email-row {
-      display: flex; gap: 10px; max-width: 400px;
-      margin: 0 auto; position: relative; z-index: 1;
-    }
-    .email-row input {
-      flex: 1; padding: 12px 16px; border-radius: 12px;
-      border: 1px solid #3f3f46; background: #27272a;
-      color: #f4f4f0; font-family: 'Epilogue', sans-serif;
-      font-size: 14px; outline: none; transition: border-color 0.15s;
-    }
-    .email-row input:focus { border-color: var(--accent); }
-    .email-row input::placeholder { color: #71717a; }
-    .email-row button {
-      padding: 12px 20px; border-radius: 12px; border: none;
-      background: var(--accent); color: #fff;
-      font-family: 'Epilogue', sans-serif; font-size: 14px;
-      font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s;
-    }
-    .email-row button:hover { background: var(--accent2); transform: translateY(-1px); }
-
-
-    /* ============================================================
-      ABOUT PAGE
-      Two column: sticky photo column on left, bio content on right
-    ============================================================ */
-    .about-hero {
-      padding: 70px 0 60px;
-      display: grid; grid-template-columns: 320px 1fr; gap: 70px; align-items: start;
-    }
-
-    /* Photo column stays fixed while bio scrolls */
-    .about-photo { position: sticky; top: calc(var(--nav-h) + 28px); }
-
-    /* Portrait photo placeholder */
-    .about-photo-frame {
-      width: 100%; aspect-ratio: 3/4; border-radius: 24px;
-      background: linear-gradient(135deg, var(--bg2), var(--border));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 64px; border: 1px solid var(--border);
-    }
-
-    /* Social platform chips below photo */
-    .about-social { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-    .social-chip {
-      padding: 6px 13px; border-radius: 20px;
-      border: 1px solid var(--border); background: var(--surface);
-      font-size: 12px; font-weight: 500; color: var(--ink2);
-      cursor: pointer; transition: all 0.15s;
-    }
-    .social-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-
-    /* Bio content — right column */
-    .about-eyebrow {
-      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--accent); font-weight: 600; margin-bottom: 12px;
-    }
-    .about-name {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(34px, 4vw, 50px);
-      line-height: 1.1; letter-spacing: -0.5px; margin-bottom: 10px;
-    }
-    .about-tagline {
-      font-size: 17px; color: var(--muted); margin-bottom: 28px;
-      font-weight: 300; font-style: italic; font-family: 'Playfair Display', serif;
-    }
-    .about-bio {
-      font-size: 15px; line-height: 1.8; color: var(--ink2);
-      font-weight: 300; margin-bottom: 20px;
-    }
-    .about-bio strong { color: var(--ink); font-weight: 600; }
-
-    /* Skills section */
-    .skills-label {
-      font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--muted); font-weight: 600; margin-bottom: 14px; margin-top: 40px;
-    }
-    .skills-wrap { display: flex; flex-wrap: wrap; gap: 9px; }
-    .skill-pill {
-      padding: 7px 15px; border-radius: 20px;
-      background: var(--surface); border: 1px solid var(--border);
-      font-size: 13px; font-weight: 500; color: var(--ink2); transition: all 0.15s;
-    }
-    .skill-pill:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent2); }
-
-    /* Timeline */
-    .timeline { margin-top: 40px; }
-    .timeline-item {
-      display: grid; grid-template-columns: 76px 1fr;
-      gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--border);
-    }
-    .timeline-item:last-child { border-bottom: none; }
-    .timeline-year { font-size: 13px; font-weight: 600; color: var(--accent); padding-top: 2px; }
-    .timeline-content h4 { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
-    .timeline-content p { font-size: 13px; color: var(--muted); line-height: 1.6; font-weight: 300; }
-
-
-    /* ============================================================
-      PROJECTS PAGE
-      Hero header, filter buttons, responsive card grid
-    ============================================================ */
-    .projects-hero {
-      padding: 70px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 44px;
-    }
-    .projects-hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(34px, 5vw, 54px); letter-spacing: -0.5px; margin-bottom: 12px;
-    }
-    .projects-hero p { font-size: 15px; color: var(--muted); font-weight: 300; max-width: 460px; line-height: 1.7; }
-
-    /* Filter buttons row */
-    .filter-row { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
-    .filter-btn {
-      padding: 7px 17px; border-radius: 20px;
-      border: 1.5px solid var(--border); background: transparent;
-      font-family: 'Epilogue', sans-serif; font-size: 13px; font-weight: 500;
-      color: var(--muted); cursor: pointer; transition: all 0.15s;
-    }
-    .filter-btn:hover, .filter-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-
-    /* Auto-fill grid — cards wrap to new rows as needed */
-    .all-projects-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr));
-      gap: 20px; margin-bottom: 72px;
-    }
-
-    /* Project card on projects page */
-    .pcard {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.2s;
-      animation: fadeUp 0.3s ease both;
-    }
-    .pcard:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 36px rgba(183,110,121,0.12); border-color: var(--accent);
-    }
-    [data-theme="dark"] .pcard:hover { box-shadow: 0 14px 36px rgba(0,0,0,0.45); }
-
-    .pcard-thumb {
-      aspect-ratio: 16/10;
-      background: linear-gradient(135deg, var(--bg2), var(--border));
-      display: flex; align-items: center; justify-content: center; font-size: 40px;
-    }
-    .pcard-body { padding: 18px 20px; }
-    .pcard-tag {
-      font-size: 11px; font-weight: 600; letter-spacing: 1px;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 7px;
-    }
-    .pcard-title {
-      font-family: 'Playfair Display', serif; font-size: 19px;
-      color: var(--ink); margin-bottom: 8px; line-height: 1.3;
-    }
-    .pcard-desc { font-size: 13px; color: var(--muted); line-height: 1.6; font-weight: 300; }
-    .pcard-meta {
-      padding: 13px 20px; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .pcard-date { font-size: 12px; color: var(--muted); }
-    .pcard-read { font-size: 12px; font-weight: 600; color: var(--accent); }
-
-
-    /* ============================================================
-      CONTACT PAGE
-      Two column: social links left, contact form right
-    ============================================================ */
-    .contact-hero {
-      padding: 70px 0 60px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start;
-    }
-    .contact-left h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(34px, 4vw, 50px);
-      letter-spacing: -0.5px; margin-bottom: 14px; line-height: 1.1;
-    }
-    .contact-left p { font-size: 15px; color: var(--muted); line-height: 1.7; font-weight: 300; margin-bottom: 36px; }
-
-    /* Social link cards */
-    .contact-links { display: flex; flex-direction: column; gap: 10px; }
-    .contact-link-card {
-      display: flex; align-items: center; gap: 14px; padding: 14px 18px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; cursor: pointer; transition: all 0.15s;
-    }
-    .contact-link-card:hover { border-color: var(--accent); transform: translateX(4px); }
-    .contact-icon {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: var(--accent-soft); display: flex; align-items: center;
-      justify-content: center; font-size: 17px; flex-shrink: 0;
-    }
-    .contact-info h4 { font-size: 14px; font-weight: 600; color: var(--ink); }
-    .contact-info p { font-size: 12px; color: var(--muted); margin-top: 1px; }
-
-    /* Contact form */
-    .contact-form {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 24px; padding: 32px;
-    }
-    .contact-form h3 { font-family: 'Playfair Display', serif; font-size: 21px; margin-bottom: 22px; color: var(--ink); }
-    .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--ink2); margin-bottom: 7px; }
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%; padding: 11px 14px; border-radius: 11px;
-      border: 1.5px solid var(--border); background: var(--bg);
-      color: var(--ink); font-family: 'Epilogue', sans-serif;
-      font-size: 14px; outline: none; transition: border-color 0.15s, background 0.15s; font-weight: 300;
-    }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-      border-color: var(--accent); background: var(--surface);
-    }
-    .form-group textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
-    /* Two inputs side by side */
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .form-submit {
-      width: 100%; padding: 13px; border-radius: 12px; border: none;
-      background: var(--ink); color: var(--bg); font-family: 'Epilogue', sans-serif;
-      font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
-    }
-    .form-submit:hover {
-      background: var(--accent); transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(183,110,121,0.3);
-    }
-
-
-    /* ============================================================
-      FOOTER
-      Sits at bottom of each page — logo, copyright, links
-    ============================================================ */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 36px clamp(20px,5vw,80px);
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
-    }
-    .footer-logo { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--ink); }
-    .footer-logo span { color: var(--accent); }
-    .footer-copy { font-size: 12px; color: var(--muted); }
-    .footer-links { display: flex; gap: 18px; }
-    .footer-link {
-      font-size: 13px; color: var(--muted); cursor: pointer; border: none;
-      background: none; font-family: 'Epilogue', sans-serif; transition: color 0.15s;
-    }
-    .footer-link:hover { color: var(--accent); }
-
-
-    /* ============================================================
-      RESPONSIVE BREAKPOINTS
-
-      880px — tablet: stack hero columns, unstick photo, hide hero image
-      580px — mobile: hide nav links, single column grids
-    ============================================================ */
-    @media (max-width: 880px) {
-      .hero { grid-template-columns: 1fr; gap: 36px; padding: 56px 0 44px; }
-      .hero-visual { display: none; } /* Hide image card on tablet */
-      .about-hero { grid-template-columns: 1fr; gap: 36px; }
-      .about-photo { position: static; } /* Unstick on mobile */
-      .about-photo-frame { aspect-ratio: 1/1; max-width: 240px; }
-      .contact-hero { grid-template-columns: 1fr; gap: 44px; }
-      .projects-grid { grid-template-columns: repeat(2,1fr); }
-    }
-
-    @media (max-width: 580px) {
-      .nav-links { display: none; } /* Hide nav links — would need a hamburger menu */
-      .projects-grid { grid-template-columns: 1fr; }
-      .stats-row { grid-template-columns: 1fr; }
-      .form-row { grid-template-columns: 1fr; }
-      .newsletter { padding: 32px 20px; }
-      .email-row { flex-direction: column; }
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuiltByAadi — Building things that shouldn't exist yet</title>
+
+<!-- ── OPEN GRAPH ── -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://aaditya-virk.github.io/builtbyaadi">
+<meta property="og:title"       content="BuiltByAadi">
+<meta property="og:description" content="Building things that shouldn't exist yet. Hardware, 3D printing, firmware, and build logs by Aadi Virk.">
+<meta property="og:image"       content="https://aaditya-virk.github.io/builtbyaadi/og-image.png">
+<meta name="twitter:card"       content="summary_large_image">
+<meta name="twitter:title"      content="BuiltByAadi">
+<meta name="twitter:description"content="Building things that shouldn't exist yet.">
+<meta name="twitter:image"      content="https://aaditya-virk.github.io/builtbyaadi/og-image.png">
+<meta name="description"        content="Hardware projects, 3D printing, firmware, and build logs by Aadi Virk.">
+
+<!-- ── FAVICON — inline SVG as data URI ── -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c0f1a'/%3E%3Ctext x='5' y='24' font-family='Georgia,serif' font-size='22' font-weight='700' fill='%234f8ef7'%3EB%3C/text%3E%3C/svg%3E">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0f1a;--bg2:#141826;--surface:#171d2f;--ink:#eaecf4;--ink2:#8e96b0;
+  --muted:#4a526e;--border:#212840;--accent:#4f8ef7;--accent2:#2d6ff0;
+  --accent-soft:#0d1a3a;--nav-h:68px;--shadow:0 4px 24px rgba(0,0,0,.5);
+  --ease:.25s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"]{
+  --bg:#fafaf8;--bg2:#f2f2ee;--surface:#ffffff;--ink:#111218;--ink2:#3d3f4e;
+  --muted:#9496a8;--border:#e4e4ec;--accent:#2d5be3;--accent2:#1a45c9;
+  --accent-soft:#edf1fd;--shadow:0 2px 16px rgba(20,24,60,.07);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Epilogue',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;transition:background var(--ease),color var(--ease);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
+
+/* ── SCROLL PROGRESS BAR ── */
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:9998;transition:width .05s linear;opacity:0;pointer-events:none}
+#progress-bar.visible{opacity:1}
+
+/* ── LOAD ANIMATIONS ── */
+@keyframes logoReveal{from{opacity:0;filter:blur(4px);transform:translateY(-6px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes dotPop{0%{opacity:0;transform:scale(0) rotate(-20deg)}70%{transform:scale(1.4) rotate(4deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+@keyframes navLinkIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* Only the letter spans inside the logo */
+.nav-logo .l{display:inline-block;opacity:0;animation:logoReveal .35s ease forwards}
+.nav-logo .dot{display:inline-block;opacity:0;color:var(--accent);animation:dotPop .5s cubic-bezier(.34,1.56,.64,1) forwards}
+
+/* Nav links — hidden until JS sets their delay */
+.nav-anim{opacity:0;animation:navLinkIn .3s ease forwards}
+
+/* Hero — only animate on initial load via .hero-animate class added by JS */
+.hero-animate{opacity:0;animation:heroIn .5s ease forwards}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,5vw,80px);background:var(--bg);border-bottom:1px solid var(--border);z-index:100;transition:background var(--ease),border-color var(--ease)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);cursor:pointer;border:none;background:none;letter-spacing:-.3px}
+.nav-logo .dot{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{padding:7px 15px;border-radius:10px;border:none;background:transparent;font-family:'Epilogue',sans-serif;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.nav-link:hover,.nav-link.active{color:var(--ink);background:var(--bg2)}
+.nav-controls{display:flex;align-items:center;gap:8px}
+.theme-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.theme-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.theme-btn svg{width:17px;height:17px}
+.icon-sun{display:none}
+.icon-moon{display:block;color:#fff}
+[data-theme="light"] .icon-sun{display:block;color:var(--ink)}
+[data-theme="light"] .icon-moon{display:none}
+
+/* ── PAGES ── */
+.page{display:none;padding-top:var(--nav-h);animation:fadeUp .35s ease both}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.container{max-width:1060px;margin:0 auto;padding:0 clamp(20px,5vw,80px)}
+
+/* ── HERO ── */
+.hero{padding:90px 0 70px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(38px,4.5vw,58px);line-height:1.08;letter-spacing:-1px;margin-bottom:20px}
+.hero-title em{font-style:italic;color:var(--accent)}
+.hero-desc{font-size:16px;line-height:1.75;color:var(--ink2);font-weight:300;margin-bottom:34px}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{padding:12px 24px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Epilogue',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 8px 28px rgba(45,91,227,.35)}
+.btn-secondary{padding:12px 24px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--ink);font-family:'Epilogue',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.hero-img-card{aspect-ratio:4/3;border-radius:24px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;position:relative}
+.hero-placeholder{width:100%;height:100%;background:linear-gradient(135deg,var(--bg2),var(--border));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:13px}
+.hero-placeholder .icon{font-size:48px;opacity:.5}
+.hero-badge{position:absolute;bottom:18px;left:18px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:9px 14px;font-size:12px;font-weight:500;color:var(--ink2);box-shadow:var(--shadow);display:flex;align-items:center;gap:8px}
+.pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.2)}}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:72px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--accent)}
+.stat-num{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--ink);letter-spacing:-1px}
+.stat-num span{color:var(--accent)}
+.stat-label{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* ── SECTION HEADER ── */
+.section-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}
+.section-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--ink);letter-spacing:-.3px}
+.see-all{font-size:13px;font-weight:500;color:var(--accent);cursor:pointer;border:none;background:none;font-family:'Epilogue',sans-serif;text-decoration:none}
+.see-all:hover{color:var(--accent2)}
+
+/* ── HOME PROJECT CARDS ── */
+.projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:72px}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:all .2s}
+.project-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(45,91,227,.12);border-color:var(--accent)}
+.project-thumb{aspect-ratio:16/9;background:linear-gradient(135deg,var(--bg2),var(--border));display:flex;align-items:center;justify-content:center;font-size:36px}
+.project-body{padding:16px 18px}
+.project-tag{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.project-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--ink);line-height:1.3;margin-bottom:7px}
+.project-desc{font-size:13px;color:var(--muted);line-height:1.6;font-weight:300}
+.project-footer{padding:11px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.project-date{font-size:12px;color:var(--muted)}
+.project-arrow{color:var(--accent);font-size:15px;transition:transform .15s}
+.project-card:hover .project-arrow{transform:translateX(4px)}
+
+/* ── YOUTUBE ── */
+.yt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:72px}
+.yt-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:all .2s;text-decoration:none;display:block}
+.yt-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(45,91,227,.12);border-color:var(--accent)}
+.yt-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--bg2)}
+.yt-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.yt-card:hover .yt-thumb img{transform:scale(1.04)}
+.yt-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);opacity:0;transition:opacity .2s}
+.yt-card:hover .yt-play{opacity:1}
+.yt-play svg{width:48px;height:48px;fill:#fff;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
+.yt-body{padding:14px 18px 16px}
+.yt-tag{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#ff0000;margin-bottom:6px}
+.yt-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--ink);line-height:1.35;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.yt-date{font-size:12px;color:var(--muted)}
+.yt-loading{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:12px;padding:48px;color:var(--muted);font-size:14px}
+.yt-spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.yt-error{grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-size:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── NEWSLETTER ── */
+.newsletter{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:52px;text-align:center;margin-bottom:72px;position:relative;overflow:hidden}
+.newsletter::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(79,142,247,.1),transparent 70%)}
+.newsletter h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--ink);margin-bottom:10px;position:relative;z-index:1}
+.newsletter p{color:var(--ink2);font-size:15px;margin-bottom:26px;position:relative;z-index:1;font-weight:300}
+.email-row{display:flex;gap:10px;max-width:400px;margin:0 auto;position:relative;z-index:1}
+.email-row input{flex:1;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;font-size:14px;outline:none;transition:border-color .15s}
+.email-row input:focus{border-color:var(--accent)}
+.email-row input::placeholder{color:var(--muted)}
+.email-row button{padding:12px 20px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Epilogue',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.email-row button:hover{background:var(--accent2)}
+
+/* ── ABOUT ── */
+.about-hero{padding:70px 0 60px;display:grid;grid-template-columns:320px 1fr;gap:70px;align-items:start}
+.about-photo{position:sticky;top:calc(var(--nav-h) + 28px)}
+.about-photo-frame{width:100%;aspect-ratio:3/4;border-radius:24px;background:linear-gradient(135deg,var(--bg2),var(--border));display:flex;align-items:center;justify-content:center;font-size:64px;border:1px solid var(--border)}
+.about-social{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.social-chip{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:500;color:var(--ink2);cursor:pointer;transition:all .15s}
+.social-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.about-eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:12px}
+.about-name{font-family:'Playfair Display',serif;font-size:clamp(34px,4vw,50px);line-height:1.1;letter-spacing:-.5px;margin-bottom:10px}
+.about-tagline{font-size:17px;color:var(--muted);margin-bottom:28px;font-weight:300;font-style:italic;font-family:'Playfair Display',serif}
+.about-bio{font-size:15px;line-height:1.8;color:var(--ink2);font-weight:300;margin-bottom:20px}
+.about-bio strong{color:var(--ink);font-weight:600}
+.skills-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:14px;margin-top:40px}
+.skills-wrap{display:flex;flex-wrap:wrap;gap:9px}
+.skill-pill{padding:7px 15px;border-radius:20px;background:var(--surface);border:1px solid var(--border);font-size:13px;font-weight:500;color:var(--ink2);transition:all .15s}
+.skill-pill:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.timeline{margin-top:40px}
+.timeline-item{display:grid;grid-template-columns:76px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--border)}
+.timeline-item:last-child{border-bottom:none}
+.timeline-year{font-size:13px;font-weight:600;color:var(--accent);padding-top:2px}
+.timeline-content h4{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.timeline-content p{font-size:13px;color:var(--muted);line-height:1.6;font-weight:300}
+
+/* ── PROJECTS PAGE ── */
+.projects-hero{padding:70px 0 48px;border-bottom:1px solid var(--border);margin-bottom:44px}
+.projects-hero h1{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,54px);letter-spacing:-.5px;margin-bottom:12px}
+.projects-hero p{font-size:15px;color:var(--muted);font-weight:300;max-width:460px;line-height:1.7}
+.filter-row{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.filter-btn{padding:7px 17px;border-radius:20px;border:1.5px solid var(--border);background:transparent;font-family:'Epilogue',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.all-projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px;margin-bottom:72px}
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:all .2s;animation:fadeUp .3s ease both}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(45,91,227,.12);border-color:var(--accent)}
+.pcard-thumb{aspect-ratio:16/10;background:linear-gradient(135deg,var(--bg2),var(--border));display:flex;align-items:center;justify-content:center;font-size:40px}
+.pcard-body{padding:18px 20px}
+.pcard-tag{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.pcard-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--ink);margin-bottom:8px;line-height:1.3}
+.pcard-desc{font-size:13px;color:var(--muted);line-height:1.6;font-weight:300}
+.pcard-meta{padding:13px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.pcard-date{font-size:12px;color:var(--muted)}
+.pcard-read{font-size:12px;font-weight:600;color:var(--accent)}
+
+/* ── CONTACT ── */
+.contact-hero{padding:70px 0 60px;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.contact-left h1{font-family:'Playfair Display',serif;font-size:clamp(34px,4vw,50px);letter-spacing:-.5px;margin-bottom:14px;line-height:1.1}
+.contact-left p{font-size:15px;color:var(--muted);line-height:1.7;font-weight:300;margin-bottom:36px}
+.contact-links{display:flex;flex-direction:column;gap:10px}
+.contact-link-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .15s}
+.contact-link-card:hover{border-color:var(--accent);transform:translateX(4px)}
+.contact-icon{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.contact-info h4{font-size:14px;font-weight:600;color:var(--ink)}
+.contact-info p{font-size:12px;color:var(--muted);margin-top:1px}
+.contact-form{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px}
+.contact-form h3{font-family:'Playfair Display',serif;font-size:21px;margin-bottom:22px;color:var(--ink)}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:7px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:11px 14px;border-radius:11px;border:1.5px solid var(--border);background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;font-size:14px;outline:none;transition:border-color .15s;font-weight:300}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:110px;line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-submit{width:100%;padding:13px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Epilogue',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.form-submit:hover{background:var(--accent2);transform:translateY(-1px)}
+
+/* ── POST PAGE ── */
+.post-page{padding:calc(var(--nav-h) + 52px) 0 80px}
+.post-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:none;font-family:'Epilogue',sans-serif;margin-bottom:40px;padding:0;transition:color .15s}
+.post-back:hover{color:var(--accent)}
+.post-back svg{width:15px;height:15px;transition:transform .15s}
+.post-back:hover svg{transform:translateX(-3px)}
+.post-header{margin-bottom:48px}
+.post-tag{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.post-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);line-height:1.1;letter-spacing:-.5px;color:var(--ink);margin-bottom:20px}
+.post-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.post-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--muted);flex-shrink:0}
+/* read time badge — more prominent */
+.post-read-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600}
+.post-read-badge svg{width:12px;height:12px}
+/* copy link button */
+.copy-link-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Epilogue',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;margin-top:4px}
+.copy-link-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.copy-link-btn svg{width:13px;height:13px}
+.copy-link-btn.copied{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,.08)}
+.post-hero-emoji{width:100%;aspect-ratio:16/6;background:linear-gradient(135deg,var(--bg2),var(--border));border-radius:20px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:72px;margin-bottom:52px}
+.post-body-text{max-width:680px}
+.post-body-text p{font-size:16px;line-height:1.85;color:var(--ink2);font-weight:300;margin-bottom:24px}
+.post-body-text p:last-child{margin-bottom:0}
+.post-footer-nav{margin-top:72px;padding-top:32px;border-top:1px solid var(--border)}
+
+/* ── BACK TO TOP ── */
+#back-to-top{position:fixed;bottom:32px;right:32px;width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--ink2);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);z-index:200;opacity:0;transform:translateY(12px);transition:all .25s;pointer-events:none}
+#back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:all}
+#back-to-top:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+#back-to-top svg{width:16px;height:16px}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.footer-logo{font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)}
+.footer-logo span{color:var(--accent)}
+.footer-copy{font-size:12px;color:var(--muted)}
+.footer-links{display:flex;gap:18px}
+.footer-link{font-size:13px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:'Epilogue',sans-serif;transition:color .15s}
+.footer-link:hover{color:var(--accent)}
+
+@media(max-width:880px){
+  .hero{grid-template-columns:1fr;gap:36px;padding:56px 0 44px}
+  .hero-visual{display:none}
+  .about-hero{grid-template-columns:1fr;gap:36px}
+  .about-photo{position:static}
+  .about-photo-frame{aspect-ratio:1/1;max-width:240px}
+  .contact-hero{grid-template-columns:1fr;gap:44px}
+  .projects-grid{grid-template-columns:repeat(2,1fr)}
+  .yt-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:580px){
+  .nav-links{display:none}
+  .projects-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .newsletter{padding:32px 20px}
+  .email-row{flex-direction:column}
+  .yt-grid{grid-template-columns:1fr}
+  #back-to-top{bottom:20px;right:20px}
+}
+</style>
 </head>
 <body>
 
-  <!-- ============================================================
-    NAVBAR
-    Fixed top bar with logo, page links, and dark mode slider.
-    onclick calls showPage() to switch between pages.
-    toggleTheme() flips data-theme on the <html> element.
-  ============================================================ -->
-  <nav>
-    <button class="nav-logo" onclick="showPage('home')">BuiltByAadi<span>.</span></button>
+<!-- SCROLL PROGRESS BAR -->
+<div id="progress-bar"></div>
 
-    <div class="nav-links">
-      <button class="nav-link active" onclick="showPage('home')">Home</button>
-      <button class="nav-link" onclick="showPage('about')">About</button>
-      <button class="nav-link" onclick="showPage('projects')">Projects</button>
-      <button class="nav-link" onclick="showPage('contact')">Contact</button>
-    </div>
+<!-- BACK TO TOP -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
 
-    <!-- Dark mode slider — clicking anywhere on it calls toggleTheme() -->
-    <div class="theme-slider" onclick="toggleTheme()">
-      <span class="slider-label left">Light</span>
-      <div class="slider-track">
-        <div class="slider-thumb"></div>
-      </div>
-      <span class="slider-label right">Dark</span>
-    </div>
-  </nav>
+<!-- NAV -->
+<nav>
+  <button class="nav-logo" id="nav-logo" onclick="showPage('home')"></button>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('home')">Home</button>
+    <button class="nav-link" onclick="showPage('about')">About</button>
+    <button class="nav-link" onclick="showPage('projects')">Projects</button>
+    <button class="nav-link" onclick="showPage('contact')">Contact</button>
+  </div>
+  <div class="nav-controls">
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
 
-
-  <!-- ============================================================
-    HOME PAGE
-    id="page-home" — shown by default with class "active"
-  ============================================================ -->
-  <div class="page active" id="page-home">
-    <div class="container">
-
-      <!-- HERO -->
-      <div class="hero">
-
-        <!-- Left column — text content -->
-        <div>
-          <div class="hero-eyebrow">Builder · Designer · Maker</div>
-
-          <h1 class="hero-title">
-            Building things that <em>shouldn't</em> exist yet.
-          </h1>
-
-          <p class="hero-desc">
-            I design and build hardware projects, write about the process, and share
-            everything I learn along the way. From PCBs to 3D printing to firmware
-            — all from scratch.
-          </p>
-
-          <div class="btn-row">
-            <button class="btn-primary" onclick="showPage('projects')">See My Projects →</button>
-            <button class="btn-secondary" onclick="showPage('about')">About Me</button>
-          </div>
-        </div>
-
-        <!-- Right column — project image card -->
-        <div class="hero-visual">
-          <div class="hero-img-card">
-            <!-- Replace this placeholder with a real <img> tag when you have a photo -->
-            <div class="hero-placeholder">
-              <div class="icon">⚙️</div>
-              <span>Your project photo here</span>
-            </div>
-            <div class="hero-badge">
-              <div class="pulse"></div>
-              Currently building something new
-            </div>
-          </div>
-        </div>
-
-      </div><!-- end .hero -->
-
-
-      <!-- STATS ROW -->
-      <div class="stats-row">
-        <!-- Update these numbers as your stats grow -->
-        <div class="stat-card">
-          <div class="stat-num">12<span>+</span></div>
-          <div class="stat-label">Projects built</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">8</div>
-          <div class="stat-label">Blog posts</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">15<span>+</span></div>
-          <div class="stat-label">Skills learned</div>
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="container">
+    <div class="hero">
+      <div>
+        <div class="hero-eyebrow">Builder · Designer · Maker</div>
+        <h1 class="hero-title">Building things that <em>shouldn't</em> exist yet.</h1>
+        <p class="hero-desc">I design and build hardware projects, write about the process, and share everything I learn along the way. From PCBs to 3D printing to firmware — all from scratch.</p>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="showPage('projects')">See My Projects →</button>
+          <button class="btn-secondary" onclick="showPage('about')">About Me</button>
         </div>
       </div>
-
-
-      <!-- FEATURED PROJECTS -->
-      <div class="section-header">
-        <h2 class="section-title">Featured Projects</h2>
-        <button class="see-all" onclick="showPage('projects')">See all →</button>
-      </div>
-
-      <div class="projects-grid">
-
-        <div class="project-card" onclick="showPage('projects')">
-          <div class="project-thumb">⌨️</div>
-          <div class="project-body">
-            <div class="project-tag">Hardware · PCB</div>
-            <div class="project-title">Macro Pad from Scratch</div>
-            <div class="project-desc">Designed and built a QMK/VIAL macro pad including a custom PCB. My first ever PCB design.</div>
-          </div>
-          <div class="project-footer">
-            <span class="project-date">Mar 2023</span>
-            <span class="project-arrow">→</span>
-          </div>
-        </div>
-
-        <div class="project-card" onclick="showPage('projects')">
-          <div class="project-thumb">🖨️</div>
-          <div class="project-body">
-            <div class="project-tag">3D Printing · CAD</div>
-            <div class="project-title">Parametric Enclosure in Fusion 360</div>
-            <div class="project-desc">Step-by-step guide to designing a modular, parametric case for any keyboard project.</div>
-          </div>
-          <div class="project-footer">
-            <span class="project-date">Jan 2023</span>
-            <span class="project-arrow">→</span>
-          </div>
-        </div>
-
-        <div class="project-card" onclick="showPage('projects')">
-          <div class="project-thumb">🔐</div>
-          <div class="project-body">
-            <div class="project-tag">Arduino · Firmware</div>
-            <div class="project-title">One-Button Password Device</div>
-            <div class="project-desc">Built a mechanical-switch password button using an Arduino to avoid typing long passwords.</div>
-          </div>
-          <div class="project-footer">
-            <span class="project-date">Aug 2022</span>
-            <span class="project-arrow">→</span>
-          </div>
-        </div>
-
-      </div><!-- end .projects-grid -->
-
-
-      <!-- NEWSLETTER BANNER -->
-      <div class="newsletter">
-        <h2>Stay in the loop</h2>
-        <p>New projects, build logs, and maker resources — straight to your inbox.</p>
-        <div class="email-row">
-          <input type="email" placeholder="your@email.com">
-          <button>Subscribe</button>
-        </div>
-      </div>
-
-    </div><!-- end .container -->
-
-    <footer>
-      <div class="footer-logo">BuiltByAadi<span>.</span></div>
-      <div class="footer-copy">© 2025 · Made with curiosity</div>
-      <div class="footer-links">
-        <button class="footer-link" onclick="showPage('about')">About</button>
-        <button class="footer-link" onclick="showPage('projects')">Projects</button>
-        <button class="footer-link" onclick="showPage('contact')">Contact</button>
-      </div>
-    </footer>
-  </div><!-- end #page-home -->
-
-
-  <!-- ============================================================
-    ABOUT PAGE
-    id="page-about" — hidden by default, shown when nav is clicked
-  ============================================================ -->
-  <div class="page" id="page-about">
-    <div class="container">
-      <div class="about-hero">
-
-        <!-- Left column — sticky photo + social links -->
-        <div class="about-photo">
-          <div class="about-photo-frame">🧑‍💻</div>
-          <!-- Replace emoji with a real <img> tag when you have a photo -->
-          <div class="about-social">
-            <div class="social-chip">🐦 Twitter</div>
-            <div class="social-chip">💼 LinkedIn</div>
-            <div class="social-chip">🐙 GitHub</div>
-            <div class="social-chip">📸 Instagram</div>
-          </div>
-        </div>
-
-        <!-- Right column — bio content -->
-        <div>
-          <div class="about-eyebrow">About me</div>
-          <h1 class="about-name">Hey, I'm<br>Aadi Virk</h1>
-          <p class="about-tagline">Math student. Maker. Building my way into engineering.</p>
-
-          <p class="about-bio">
-            I'm a <strong>first-year math student at Carleton University</strong> transitioning
-            into engineering through software, hardware, and AI projects. I build things that
-            serve a purpose — and document every step.
-          </p>
-          <p class="about-bio">
-            This site is my build log — a place to share what I learn, the mistakes I make,
-            and the resources I wish I had when I started.
-          </p>
-
-          <!-- Skills pills -->
-          <div class="skills-label">Tools &amp; Skills</div>
-          <div class="skills-wrap">
-            <div class="skill-pill">Python</div>
-            <div class="skill-pill">Arduino / C++</div>
-            <div class="skill-pill">3D Printing</div>
-            <div class="skill-pill">PCB Design</div>
-            <div class="skill-pill">Fusion 360</div>
-            <div class="skill-pill">Machine Learning</div>
-            <div class="skill-pill">Technical Writing</div>
-          </div>
-
-          <!-- Timeline -->
-          <div class="timeline">
-            <div class="skills-label">Timeline</div>
-            <div class="timeline-item">
-              <div class="timeline-year">2025</div>
-              <div class="timeline-content">
-                <h4>Started Carleton University</h4>
-                <p>First year math student, self-teaching the engineering stack on the side.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2023</div>
-              <div class="timeline-content">
-                <h4>First custom PCB</h4>
-                <p>Designed and manufactured my first PCB — a macro pad called Core_00.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-year">2022</div>
-              <div class="timeline-content">
-                <h4>Started making</h4>
-                <p>Built my first Arduino project — a one-button password device.</p>
-              </div>
-            </div>
-          </div>
-
+      <div class="hero-visual">
+        <div class="hero-img-card">
+          <div class="hero-placeholder"><div class="icon">⚙️</div><span>Your project photo here</span></div>
+          <div class="hero-badge"><div class="pulse"></div>Currently building something new</div>
         </div>
       </div>
     </div>
-
-    <footer>
-      <div class="footer-logo">BuiltByAadi<span>.</span></div>
-      <div class="footer-copy">© 2025 · Made with curiosity</div>
-      <div class="footer-links">
-        <button class="footer-link" onclick="showPage('home')">Home</button>
-        <button class="footer-link" onclick="showPage('projects')">Projects</button>
-        <button class="footer-link" onclick="showPage('contact')">Contact</button>
-      </div>
-    </footer>
-  </div><!-- end #page-about -->
-
-
-  <!-- ============================================================
-    PROJECTS PAGE
-    Filter buttons update the grid dynamically via JavaScript.
-    Cards are rendered by renderProjects() from the projects array.
-  ============================================================ -->
-  <div class="page" id="page-projects">
-    <div class="container">
-
-      <div class="projects-hero">
-        <h1>Projects <span style="color:var(--accent)">&amp; Build Logs</span></h1>
-        <p>Everything I've designed, built, and written about. From early prototypes to finished things.</p>
-      </div>
-
-      <!-- Filter buttons — clicking calls filterProjects() -->
-      <div class="filter-row">
-        <button class="filter-btn active" onclick="filterProjects(this,'all')">All</button>
-        <button class="filter-btn" onclick="filterProjects(this,'hardware')">Hardware</button>
-        <button class="filter-btn" onclick="filterProjects(this,'3d')">3D Printing</button>
-        <button class="filter-btn" onclick="filterProjects(this,'firmware')">Firmware</button>
-        <button class="filter-btn" onclick="filterProjects(this,'guide')">Guides</button>
-      </div>
-
-      <!-- Cards are injected here by renderProjects() in JavaScript -->
-      <div class="all-projects-grid" id="projects-grid"></div>
-
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="stat-projects"></div><div class="stat-label">Projects built</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-posts"></div><div class="stat-label">Blog posts</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-skills"></div><div class="stat-label">Skills learned</div></div>
     </div>
-
-    <footer>
-      <div class="footer-logo">BuiltByAadi<span>.</span></div>
-      <div class="footer-copy">© 2025 · Made with curiosity</div>
-      <div class="footer-links">
-        <button class="footer-link" onclick="showPage('home')">Home</button>
-        <button class="footer-link" onclick="showPage('about')">About</button>
-        <button class="footer-link" onclick="showPage('contact')">Contact</button>
+    <div class="section-header">
+      <h2 class="section-title">Featured Projects</h2>
+      <button class="see-all" onclick="showPage('projects')">See all →</button>
+    </div>
+    <div class="projects-grid" id="featured-grid"></div>
+    <div class="section-header" style="margin-top:72px">
+      <h2 class="section-title">Latest Videos</h2>
+      <a href="https://www.youtube.com/@aadiv405" target="_blank" class="see-all">View channel →</a>
+    </div>
+    <div class="yt-grid" id="yt-grid">
+      <div class="yt-loading"><div class="yt-spinner"></div><span>Loading videos...</span></div>
+    </div>
+    <div class="newsletter">
+      <h2>Stay in the loop</h2>
+      <p>New projects, build logs, and maker resources — straight to your inbox.</p>
+      <div class="email-row">
+        <input type="email" placeholder="your@email.com">
+        <button>Subscribe</button>
       </div>
-    </footer>
-  </div><!-- end #page-projects -->
+    </div>
+  </div>
+  <footer>
+    <div class="footer-logo">BuiltByAadi<span>.</span></div>
+    <div class="footer-copy">© 2025 · Made with curiosity</div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="showPage('about')">About</button>
+      <button class="footer-link" onclick="showPage('projects')">Projects</button>
+      <button class="footer-link" onclick="showPage('contact')">Contact</button>
+    </div>
+  </footer>
+</div>
 
-
-  <!-- ============================================================
-    CONTACT PAGE
-    Social link cards on left, contact form on right.
-    Form submit button has a simple visual confirmation — no backend.
-  ============================================================ -->
-  <div class="page" id="page-contact">
-    <div class="container">
-      <div class="contact-hero">
-
-        <!-- Left — heading + social links -->
-        <div class="contact-left">
-          <h1>Let's <span style="color:var(--accent);font-style:italic">talk.</span></h1>
-          <p>Have a project idea, collab proposal, or just want to say hi? Always happy to hear from fellow makers.</p>
-
-          <div class="contact-links">
-            <!-- Update href and text with your real handles -->
-            <div class="contact-link-card">
-              <div class="contact-icon">✉️</div>
-              <div class="contact-info"><h4>Email</h4><p>hello@builtbyaadi.com</p></div>
-            </div>
-            <div class="contact-link-card">
-              <div class="contact-icon">🐦</div>
-              <div class="contact-info"><h4>Twitter / X</h4><p>@yourhandle</p></div>
-            </div>
-            <div class="contact-link-card">
-              <div class="contact-icon">🐙</div>
-              <div class="contact-info"><h4>GitHub</h4><p>github.com/Aaditya-Virk</p></div>
-            </div>
-            <div class="contact-link-card">
-              <div class="contact-icon">💼</div>
-              <div class="contact-info"><h4>LinkedIn</h4><p>linkedin.com/in/yourname</p></div>
-            </div>
-          </div>
+<!-- ABOUT -->
+<div class="page" id="page-about">
+  <div class="container">
+    <div class="about-hero">
+      <div class="about-photo">
+        <div class="about-photo-frame">🧑‍💻</div>
+        <div class="about-social">
+          <div class="social-chip">🐦 Twitter</div>
+          <div class="social-chip">💼 LinkedIn</div>
+          <div class="social-chip">🐙 GitHub</div>
+          <div class="social-chip">📸 Instagram</div>
         </div>
+      </div>
+      <div>
+        <div class="about-eyebrow">About me</div>
+        <h1 class="about-name">Hey, I'm<br>Aadi Virk</h1>
+        <p class="about-tagline">Math student. Maker. Building my way into engineering.</p>
+        <p class="about-bio">I'm a <strong>first-year math student at Carleton University</strong> transitioning into engineering through software, hardware, and AI projects. I build things that serve a purpose — and document every step.</p>
+        <p class="about-bio">This site is my build log — a place to share what I learn, the mistakes I make, and the resources I wish I had when I started.</p>
+        <div class="skills-label">Tools &amp; Skills</div>
+        <div class="skills-wrap" id="skills-wrap"></div>
+        <div class="timeline">
+          <div class="skills-label">Timeline</div>
+          <div class="timeline-item"><div class="timeline-year">2025</div><div class="timeline-content"><h4>Started Carleton University</h4><p>First year math student, self-teaching the engineering stack on the side.</p></div></div>
+          <div class="timeline-item"><div class="timeline-year">2023</div><div class="timeline-content"><h4>First custom PCB</h4><p>Designed and manufactured my first PCB — a macro pad called Core_00.</p></div></div>
+          <div class="timeline-item"><div class="timeline-year">2022</div><div class="timeline-content"><h4>Started making</h4><p>Built my first Arduino project — a one-button password device.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-logo">BuiltByAadi<span>.</span></div>
+    <div class="footer-copy">© 2025 · Made with curiosity</div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="showPage('home')">Home</button>
+      <button class="footer-link" onclick="showPage('projects')">Projects</button>
+      <button class="footer-link" onclick="showPage('contact')">Contact</button>
+    </div>
+  </footer>
+</div>
 
-        <!-- Right — contact form -->
-        <!-- Note: this form has no backend — add Formspree or Netlify Forms to make it send emails -->
-        <div class="contact-form">
-          <h3>Send a message</h3>
+<!-- PROJECTS -->
+<div class="page" id="page-projects">
+  <div class="container">
+    <div class="projects-hero">
+      <h1>Projects <span style="color:var(--accent)">&amp; Build Logs</span></h1>
+      <p>Everything I've designed, built, and written about. From early prototypes to finished things.</p>
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="filterProjects(this,'all')">All</button>
+      <button class="filter-btn" onclick="filterProjects(this,'hardware')">Hardware</button>
+      <button class="filter-btn" onclick="filterProjects(this,'3d')">3D Printing</button>
+      <button class="filter-btn" onclick="filterProjects(this,'firmware')">Firmware</button>
+      <button class="filter-btn" onclick="filterProjects(this,'guide')">Guides</button>
+      <button class="filter-btn" onclick="filterProjects(this,'blog')">Blog</button>
+    </div>
+    <div class="all-projects-grid" id="projects-grid"></div>
+  </div>
+  <footer>
+    <div class="footer-logo">BuiltByAadi<span>.</span></div>
+    <div class="footer-copy">© 2025 · Made with curiosity</div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="showPage('home')">Home</button>
+      <button class="footer-link" onclick="showPage('about')">About</button>
+      <button class="footer-link" onclick="showPage('contact')">Contact</button>
+    </div>
+  </footer>
+</div>
+
+<!-- CONTACT -->
+<!-- ── FORMSPREE: replace YOUR_FORM_ID with the ID from formspree.io ── -->
+<div class="page" id="page-contact">
+  <div class="container">
+    <div class="contact-hero">
+      <div class="contact-left">
+        <h1>Let's <span style="color:var(--accent);font-style:italic">talk.</span></h1>
+        <p>Have a project idea, collab proposal, or just want to say hi? Always happy to hear from fellow makers.</p>
+        <div class="contact-links">
+          <div class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p>hello@builtbyaadi.com</p></div></div>
+          <div class="contact-link-card"><div class="contact-icon">🐦</div><div class="contact-info"><h4>Twitter / X</h4><p>@yourhandle</p></div></div>
+          <div class="contact-link-card"><div class="contact-icon">🐙</div><div class="contact-info"><h4>GitHub</h4><p>github.com/Aaditya-Virk</p></div></div>
+          <div class="contact-link-card"><div class="contact-icon">💼</div><div class="contact-info"><h4>LinkedIn</h4><p>linkedin.com/in/yourname</p></div></div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h3>Send a message</h3>
+        <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" onsubmit="handleFormSubmit(event)">
           <div class="form-row">
-            <div class="form-group"><label>First name</label><input type="text" placeholder="Alex"></div>
-            <div class="form-group"><label>Last name</label><input type="text" placeholder="Smith"></div>
+            <div class="form-group"><label>First name</label><input type="text" name="first_name" placeholder="Alex" required></div>
+            <div class="form-group"><label>Last name</label><input type="text" name="last_name" placeholder="Smith"></div>
           </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" placeholder="alex@example.com">
-          </div>
-          <div class="form-group">
-            <label>Subject</label>
-            <select>
+          <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="alex@example.com" required></div>
+          <div class="form-group"><label>Subject</label>
+            <select name="subject">
               <option>Project collab</option>
               <option>Question about a build</option>
               <option>Just saying hi</option>
               <option>Other</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Message</label>
-            <textarea placeholder="Tell me what's on your mind..."></textarea>
+          <div class="form-group"><label>Message</label><textarea name="message" placeholder="Tell me what's on your mind..." required></textarea></div>
+          <button type="submit" class="form-submit" id="form-submit-btn">Send Message →</button>
+          <div id="form-success" style="display:none;margin-top:14px;padding:12px 16px;background:rgba(34,197,94,.1);border:1px solid #22c55e;border-radius:11px;color:#22c55e;font-size:13px;font-weight:500">
+            ✓ Message sent! I'll get back to you soon.
           </div>
-          <!-- Button shows a green tick confirmation for 3 seconds on click -->
-          <button class="form-submit" onclick="
-            this.textContent='✓ Sent!';
-            this.style.background='#16a34a';
-            setTimeout(function(btn){ btn.textContent='Send Message →'; btn.style.background=''; }.bind(null,this), 3000)
-          ">Send Message →</button>
-        </div>
-
+          <div id="form-error" style="display:none;margin-top:14px;padding:12px 16px;background:rgba(239,68,68,.1);border:1px solid #ef4444;border-radius:11px;color:#ef4444;font-size:13px">
+            Something went wrong. Try emailing me directly instead.
+          </div>
+        </form>
       </div>
     </div>
+  </div>
+  <footer>
+    <div class="footer-logo">BuiltByAadi<span>.</span></div>
+    <div class="footer-copy">© 2025 · Made with curiosity</div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="showPage('home')">Home</button>
+      <button class="footer-link" onclick="showPage('about')">About</button>
+      <button class="footer-link" onclick="showPage('projects')">Projects</button>
+    </div>
+  </footer>
+</div>
 
-    <footer>
-      <div class="footer-logo">BuiltByAadi<span>.</span></div>
-      <div class="footer-copy">© 2025 · Made with curiosity</div>
-      <div class="footer-links">
-        <button class="footer-link" onclick="showPage('home')">Home</button>
-        <button class="footer-link" onclick="showPage('about')">About</button>
-        <button class="footer-link" onclick="showPage('projects')">Projects</button>
+<!-- POST DETAIL PAGE -->
+<div class="page" id="page-post">
+  <div class="container">
+    <div class="post-page">
+      <button class="post-back" onclick="showPage('projects')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Projects
+      </button>
+      <div class="post-header">
+        <div class="post-tag" id="post-view-tag"></div>
+        <h1 class="post-title" id="post-view-title"></h1>
+        <div class="post-meta">
+          <span id="post-view-date"></span>
+          <div class="post-meta-dot"></div>
+          <span class="post-read-badge" id="post-view-read">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="post-read-text"></span>
+          </span>
+          <div class="post-meta-dot"></div>
+          <button class="copy-link-btn" id="copy-link-btn" onclick="copyPostLink()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Copy link
+          </button>
+        </div>
       </div>
-    </footer>
-  </div><!-- end #page-contact -->
+      <div class="post-hero-emoji" id="post-view-emoji"></div>
+      <div class="post-body-text" id="post-view-body"></div>
+      <div class="post-footer-nav">
+        <button class="post-back" onclick="showPage('projects')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          All Projects
+        </button>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-logo">BuiltByAadi<span>.</span></div>
+    <div class="footer-copy">© 2025 · Made with curiosity</div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="showPage('home')">Home</button>
+      <button class="footer-link" onclick="showPage('about')">About</button>
+      <button class="footer-link" onclick="showPage('projects')">Projects</button>
+    </div>
+  </footer>
+</div>
 
+<script>
+/* ================================================================
+   EDIT HERE — add new projects, blog posts, and skills
+   ================================================================ */
+var PROJECTS = [
+  { id:'p1', emoji:'⌨️', tag:'Hardware · PCB',     cat:'hardware',       title:'Macro Pad from Scratch',         desc:'Designed and built a QMK/VIAL macro pad including a custom PCB — my first-ever PCB design.',    body:'', date:'Mar 2023', read:'14 min read' },
+  { id:'p2', emoji:'🖨️', tag:'3D Printing · Guide', cat:'3d guide',       title:'Parametric Case in Fusion 360',  desc:'Full step-by-step guide to building a modular, parametric enclosure for keyboard projects.',     body:'', date:'Feb 2023', read:'10 min read' },
+  { id:'p3', emoji:'🔐', tag:'Arduino · Firmware',  cat:'firmware',       title:'One-Button Password Device',     desc:'A mechanical switch + Arduino setup to type long passwords with a single press.',                body:'', date:'Aug 2022', read:'6 min read'  },
+  { id:'p4', emoji:'🔧', tag:'Hardware · Guide',    cat:'hardware guide', title:'Wiring a Hand-Wired Keyboard',   desc:'How to wire a matrix by hand without a PCB — what worked and what definitely did not.',          body:'', date:'Oct 2022', read:'8 min read'  },
+  { id:'p5', emoji:'🎮', tag:'Firmware · QMK',      cat:'firmware',       title:'Setting Up VIAL for Beginners',  desc:'A no-nonsense guide to getting VIAL running on your custom keyboard.',                          body:'', date:'Apr 2023', read:'7 min read'  },
+  { id:'p6', emoji:'📐', tag:'3D Printing',         cat:'3d',             title:'Tolerances & Fit for 3D Prints', desc:'What I learned designing switch plates that actually fit after 14 bad test pieces.',             body:'', date:'Nov 2022', read:'5 min read'  },
+];
 
-  <script>
+var BLOG_POSTS = [
+  /* { id:'b1', emoji:'✍️', tag:'Blog', cat:'blog', title:'Why I Started Building', desc:'...', body:'...', date:'Jan 2025', read:'4 min read' }, */
+];
 
-    /* ============================================================
-      showPage(name)
-      Switches the visible page by toggling the .active class.
-      Also updates the active nav link to match.
+var SKILLS = [
+  'Python','Arduino / C++','3D Printing','PCB Design',
+  'Fusion 360','Machine Learning','Technical Writing',
+  'QMK / VIAL','KiCad','Soldering',
+];
 
-      name: 'home' | 'about' | 'projects' | 'contact'
-    ============================================================ */
-    function showPage(name) {
-      /* Hide all pages */
-      var pages = document.querySelectorAll('.page');
-      for (var i = 0; i < pages.length; i++) {
-        pages[i].classList.remove('active');
-      }
+/* YouTube channel ID — find it: youtube.com → profile → Settings → Advanced settings */
+var YT_CHANNEL_ID = 'YOUR_CHANNEL_ID';
+var YT_MAX = 3;
 
-      /* Deactivate all nav links */
-      var links = document.querySelectorAll('.nav-link');
-      for (var i = 0; i < links.length; i++) {
-        links[i].classList.remove('active');
-      }
+/* ================================================================
+   AUTOMATIC FROM HERE — no need to edit below
+   ================================================================ */
 
-      /* Show the target page */
-      document.getElementById('page-' + name).classList.add('active');
+/* ── THEME ── */
+function toggleTheme(){
+  var h=document.documentElement;
+  h.setAttribute('data-theme',h.getAttribute('data-theme')==='light'?'dark':'light');
+}
 
-      /* Activate the matching nav link */
-      var order = ['home', 'about', 'projects', 'contact'];
-      var idx = order.indexOf(name);
-      if (links[idx]) links[idx].classList.add('active');
-
-      /* Scroll back to top of page */
-      window.scrollTo(0, 0);
+/* ── PAGE NAVIGATION ── */
+function showPage(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active')});
+  document.getElementById('page-'+name).classList.add('active');
+  var idx=['home','about','projects','contact'].indexOf(name);
+  if(idx>-1) document.querySelectorAll('.nav-link')[idx].classList.add('active');
+  window.scrollTo(0,0);
+  updateProgressBar();
+  if(name==='projects') renderProjects('all');
+  if(name==='home'){
+    renderFeatured(); fetchYouTubeVideos();
+    if(hasAnimated){
+      ['.hero-eyebrow','.hero-title','.hero-desc','.btn-row','.hero-visual'].forEach(function(sel){
+        var el=document.querySelector(sel);
+        if(el){el.classList.remove('hero-animate');el.style.opacity='1';el.style.animationDelay='';}
+      });
     }
+  }
+}
 
+/* ── SCROLL: progress bar + back-to-top ── */
+function updateProgressBar(){
+  var bar=document.getElementById('progress-bar');
+  var btn=document.getElementById('back-to-top');
+  var activePage=document.querySelector('.page.active');
+  if(!activePage){bar.style.width='0%';bar.classList.remove('visible');btn.classList.remove('visible');return}
 
-    /* ============================================================
-      toggleTheme()
-      Flips data-theme attribute on <html> between "light" and "dark".
-      All CSS variables update automatically — no extra JS needed.
-    ============================================================ */
-    function toggleTheme() {
-      var html = document.documentElement;
-      var isDark = html.getAttribute('data-theme') === 'dark';
-      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  // Only show progress bar on post page
+  var onPost=activePage.id==='page-post';
+  if(onPost){ bar.classList.add('visible'); } else { bar.classList.remove('visible'); bar.style.width='0%'; }
+
+  // Back to top shows on any page after 400px scroll
+  var scrolled=window.scrollY||document.documentElement.scrollTop;
+  if(scrolled>400){ btn.classList.add('visible'); } else { btn.classList.remove('visible'); }
+
+  if(onPost){
+    var docH=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=(docH>0?Math.min(100,(scrolled/docH)*100):0)+'%';
+  }
+}
+window.addEventListener('scroll',updateProgressBar,{passive:true});
+
+/* ── STATS ── */
+function updateStats(){
+  var p=PROJECTS.length, b=BLOG_POSTS.length, s=SKILLS.length;
+  document.getElementById('stat-projects').innerHTML=p+(p>=10?'<span>+</span>':'');
+  document.getElementById('stat-posts').innerHTML=b+(b>=10?'<span>+</span>':'');
+  document.getElementById('stat-skills').innerHTML=s+'<span>+</span>';
+}
+
+/* ── SKILLS PILLS ── */
+function renderSkills(){
+  document.getElementById('skills-wrap').innerHTML=SKILLS.map(function(s){
+    return '<div class="skill-pill">'+s+'</div>';
+  }).join('');
+}
+
+/* ── FEATURED HOME GRID ── */
+function renderFeatured(){
+  document.getElementById('featured-grid').innerHTML=PROJECTS.slice(0,3).map(function(p){
+    return '<div class="project-card" onclick="openPost(\''+p.id+'\')">'+
+      '<div class="project-thumb">'+p.emoji+'</div>'+
+      '<div class="project-body"><div class="project-tag">'+p.tag+'</div><div class="project-title">'+p.title+'</div><div class="project-desc">'+p.desc+'</div></div>'+
+      '<div class="project-footer"><span class="project-date">'+p.date+'</span><span class="project-arrow">→</span></div>'+
+    '</div>';
+  }).join('');
+}
+
+/* ── ALL PROJECTS GRID ── */
+function getAllPosts(){ return PROJECTS.concat(BLOG_POSTS); }
+
+function renderProjects(filter){
+  var list=getAllPosts();
+  if(filter!=='all') list=list.filter(function(p){return p.cat.indexOf(filter)!==-1});
+  document.getElementById('projects-grid').innerHTML=list.length?list.map(function(p,i){
+    return '<div class="pcard" style="animation-delay:'+(i*.05)+'s" onclick="openPost(\''+p.id+'\')">'+
+      '<div class="pcard-thumb">'+p.emoji+'</div>'+
+      '<div class="pcard-body"><div class="pcard-tag">'+p.tag+'</div><div class="pcard-title">'+p.title+'</div><div class="pcard-desc">'+p.desc+'</div></div>'+
+      '<div class="pcard-meta"><span class="pcard-date">'+p.date+'</span><span class="pcard-read">'+p.read+' →</span></div>'+
+    '</div>';
+  }).join(''):'<p style="color:var(--muted);padding:20px 0">No posts in this category yet.</p>';
+}
+
+function filterProjects(btn,cat){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  renderProjects(cat);
+}
+
+/* ── POST DETAIL ── */
+var currentPostId=null;
+
+function openPost(id){
+  var post=null;
+  getAllPosts().forEach(function(p){if(p.id===id)post=p});
+  if(!post)return;
+  currentPostId=id;
+
+  document.getElementById('post-view-tag').textContent=post.tag;
+  document.getElementById('post-view-title').textContent=post.title;
+  document.getElementById('post-view-date').textContent=post.date;
+  document.getElementById('post-read-text').textContent=post.read;
+  document.getElementById('post-view-emoji').textContent=post.emoji;
+
+  var body=(post.body||post.desc||'').trim();
+  var paras=body.split(/\n\s*\n/).filter(function(s){return s.trim()});
+  if(!paras.length) paras=[post.desc||''];
+  document.getElementById('post-view-body').innerHTML=paras.map(function(s){
+    return '<p>'+s.replace(/\n/g,'<br>')+'</p>';
+  }).join('');
+
+  // Reset copy link button
+  var copyBtn=document.getElementById('copy-link-btn');
+  copyBtn.classList.remove('copied');
+  copyBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy link';
+
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active')});
+  document.getElementById('page-post').classList.add('active');
+  window.scrollTo(0,0);
+  updateProgressBar();
+}
+
+/* ── COPY LINK ── */
+function copyPostLink(){
+  var url=window.location.href.split('#')[0]+'#post-'+currentPostId;
+  navigator.clipboard.writeText(url).then(function(){
+    var btn=document.getElementById('copy-link-btn');
+    btn.classList.add('copied');
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy link';
+    },2500);
+  }).catch(function(){
+    // fallback for older browsers
+    var ta=document.createElement('textarea');
+    ta.value=window.location.href.split('#')[0]+'#post-'+currentPostId;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  });
+}
+
+/* ── CONTACT FORM (Formspree) ── */
+function handleFormSubmit(e){
+  e.preventDefault();
+  var btn=document.getElementById('form-submit-btn');
+  var success=document.getElementById('form-success');
+  var error=document.getElementById('form-error');
+  btn.textContent='Sending...';btn.disabled=true;
+  success.style.display='none';error.style.display='none';
+
+  fetch(e.target.action,{
+    method:'POST',
+    body:new FormData(e.target),
+    headers:{'Accept':'application/json'}
+  }).then(function(r){
+    if(r.ok){
+      success.style.display='block';
+      e.target.reset();
+    }else{
+      error.style.display='block';
     }
+  }).catch(function(){
+    error.style.display='block';
+  }).finally(function(){
+    btn.textContent='Send Message →';btn.disabled=false;
+  });
+}
 
+/* ── YOUTUBE ── */
+function fetchYouTubeVideos(){
+  var grid=document.getElementById('yt-grid');
+  if(!grid)return;
 
-    /* ============================================================
-      PROJECTS DATA
-      Add your real projects here. Each object has:
-        emoji:  shown in the card thumbnail
-        tag:    category label (uppercase, rose gold)
-        cat:    filter category — must match filter button values
-                (space-separated for multiple: 'hardware guide')
-        title:  project name
-        desc:   short description
-        date:   when you built it
-        read:   estimated read time
-    ============================================================ */
-    var projects = [
-      {
-        emoji: '⌨️',
-        tag:   'Hardware · PCB',
-        cat:   'hardware',
-        title: 'Macro Pad from Scratch',
-        desc:  'Designed and built a QMK/VIAL macro pad including a custom PCB — my first-ever PCB design.',
-        date:  'Mar 2023',
-        read:  '14 min read'
-      },
-      {
-        emoji: '🖨️',
-        tag:   '3D Printing · Guide',
-        cat:   '3d guide',
-        title: 'Parametric Case in Fusion 360',
-        desc:  'Full step-by-step guide to building a modular, parametric enclosure for keyboard projects.',
-        date:  'Feb 2023',
-        read:  '10 min read'
-      },
-      {
-        emoji: '🔐',
-        tag:   'Arduino · Firmware',
-        cat:   'firmware',
-        title: 'One-Button Password Device',
-        desc:  'A mechanical switch + Arduino setup to type long passwords with a single press.',
-        date:  'Aug 2022',
-        read:  '6 min read'
-      },
-      {
-        emoji: '🔧',
-        tag:   'Hardware · Guide',
-        cat:   'hardware guide',
-        title: 'Wiring a Hand-Wired Keyboard',
-        desc:  'How to wire a matrix by hand without a PCB — what worked and what definitely did not.',
-        date:  'Oct 2022',
-        read:  '8 min read'
-      },
-      {
-        emoji: '🎮',
-        tag:   'Firmware · QMK',
-        cat:   'firmware',
-        title: 'Setting Up VIAL for Beginners',
-        desc:  'A no-nonsense guide to getting VIAL running on your custom keyboard.',
-        date:  'Apr 2023',
-        read:  '7 min read'
-      },
-      {
-        emoji: '📐',
-        tag:   '3D Printing',
-        cat:   '3d',
-        title: 'Tolerances & Fit for 3D Prints',
-        desc:  'What I learned designing switch plates that actually fit after 14 bad test pieces.',
-        date:  'Nov 2022',
-        read:  '5 min read'
-      },
-    ];
+  if(YT_CHANNEL_ID==='YOUR_CHANNEL_ID'){
+    grid.innerHTML=[
+      {title:'Building My First Custom PCB',date:'Mar 2023'},
+      {title:'How I 3D Printed a Keyboard Case',date:'Feb 2023'},
+      {title:'One-Button Password Device Build',date:'Jan 2023'}
+    ].map(function(p,i){
+      return '<div class="yt-card" style="animation:fadeUp .3s ease '+(i*.08)+'s both;cursor:default">'+
+        '<div class="yt-thumb" style="display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(135deg,var(--bg2),var(--border))">▶️</div>'+
+        '<div class="yt-body"><div class="yt-tag">▶ YouTube</div><div class="yt-title">'+p.title+'</div><div class="yt-date">'+p.date+' · Paste your channel ID to load real videos</div></div>'+
+      '</div>';
+    }).join('');
+    return;
+  }
 
+  var rss='https://www.youtube.com/feeds/videos.xml?channel_id='+YT_CHANNEL_ID;
+  var url='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss)+'&count='+YT_MAX;
+  fetch(url)
+    .then(function(r){return r.json()})
+    .then(function(data){
+      if(!data.items||!data.items.length){grid.innerHTML='<div class="yt-error">No videos found — check your channel ID.</div>';return}
+      grid.innerHTML=data.items.slice(0,YT_MAX).map(function(v,i){
+        var m=(v.link+v.guid).match(/v=([\w-]+)/);
+        var vid=m?m[1]:'';
+        var thumb=vid?'https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg':'';
+        var date=new Date(v.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        return '<a class="yt-card" href="'+v.link+'" target="_blank" rel="noopener" style="animation:fadeUp .3s ease '+(i*.08)+'s both">'+
+          '<div class="yt-thumb">'+(thumb?'<img src="'+thumb+'" alt="'+v.title+'" loading="lazy">':'')+
+          '<div class="yt-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>'+
+          '<div class="yt-body"><div class="yt-tag">▶ YouTube</div><div class="yt-title">'+v.title+'</div><div class="yt-date">'+date+'</div></div>'+
+        '</a>';
+      }).join('');
+    })
+    .catch(function(){grid.innerHTML='<div class="yt-error">Couldn\'t load videos right now.</div>'});
+}
 
-    /* ============================================================
-      renderProjects(filter)
-      Builds the project card HTML and injects it into #projects-grid.
-      filter: 'all' shows everything, anything else filters by cat field.
-    ============================================================ */
-    function renderProjects(filter) {
-      var grid = document.getElementById('projects-grid');
+/* ── LOAD ANIMATIONS — runs once only on first page open ── */
+var hasAnimated = false;
+(function(){
+  /* 1. Wrap each letter of the logo in a .l span, dot gets .dot */
+  var logo = document.getElementById('nav-logo');
+  var text = 'BuiltByAadi';
+  var lettered = text.split('').map(function(ch, i){
+    return '<span class="l" style="animation-delay:'+(i*0.055)+'s">'+ch+'</span>';
+  }).join('');
+  var dotDelay = (text.length * 0.055 + 0.15).toFixed(2);
+  logo.innerHTML = lettered + '<span class="dot" style="animation-delay:'+dotDelay+'s">.</span>';
 
-      /* Filter projects array */
-      var list = filter === 'all'
-        ? projects
-        : projects.filter(function(p) { return p.cat.indexOf(filter) !== -1; });
+  /* 2. Stagger nav links and theme button with .nav-anim class */
+  var navBase = parseFloat(dotDelay) + 0.1;
+  document.querySelectorAll('.nav-links .nav-link').forEach(function(el, i){
+    el.classList.add('nav-anim');
+    el.style.animationDelay = (navBase + i * 0.07) + 's';
+  });
+  var themeBtn = document.querySelector('.nav-controls .theme-btn');
+  if(themeBtn){ themeBtn.classList.add('nav-anim'); themeBtn.style.animationDelay = (navBase + 4 * 0.07)+'s'; }
 
-      /* Build HTML string */
-      var html = '';
-      for (var i = 0; i < list.length; i++) {
-        var p = list[i];
-        html +=
-          '<div class="pcard" style="animation-delay:' + (i * 0.06) + 's">' +
-            '<div class="pcard-thumb">' + p.emoji + '</div>' +
-            '<div class="pcard-body">' +
-              '<div class="pcard-tag">'   + p.tag   + '</div>' +
-              '<div class="pcard-title">' + p.title + '</div>' +
-              '<div class="pcard-desc">'  + p.desc  + '</div>' +
-            '</div>' +
-            '<div class="pcard-meta">' +
-              '<span class="pcard-date">' + p.date + '</span>' +
-              '<span class="pcard-read">' + p.read + ' →</span>' +
-            '</div>' +
-          '</div>';
-      }
+  /* 3. Hero elements get .hero-animate — only on first load */
+  var heroBase = navBase + 0.2;
+  var heroSelectors = ['.hero-eyebrow','.hero-title','.hero-desc','.btn-row','.hero-visual'];
+  heroSelectors.forEach(function(sel, i){
+    var el = document.querySelector(sel);
+    if(el){ el.classList.add('hero-animate'); el.style.animationDelay = (heroBase + i * 0.1)+'s'; }
+  });
 
-      grid.innerHTML = html;
-    }
+  hasAnimated = true;
+})();
 
-
-    /* ============================================================
-      filterProjects(btn, cat)
-      Called by filter buttons on the Projects page.
-      Moves .active class to the clicked button and re-renders cards.
-    ============================================================ */
-    function filterProjects(btn, cat) {
-      var btns = document.querySelectorAll('.filter-btn');
-      for (var i = 0; i < btns.length; i++) {
-        btns[i].classList.remove('active');
-      }
-      btn.classList.add('active');
-      renderProjects(cat);
-    }
-
-
-    /* Render all projects on initial page load */
-    renderProjects('all');
-
-  </script>
+/* ── INIT ── */
+updateStats();
+renderSkills();
+renderFeatured();
+renderProjects('all');
+fetchYouTubeVideos();
+</script>
 </body>
 </html>
