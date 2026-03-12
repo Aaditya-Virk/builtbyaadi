@@ -462,10 +462,11 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
     <div class="newsletter">
       <h2>Stay in the loop</h2>
       <p>New projects, build logs, and maker resources — straight to your inbox.</p>
-      <div class="email-row">
-        <input type="email" placeholder="your@email.com">
-        <button>Subscribe</button>
+      <div class="email-row" id="nl-form">
+        <input type="email" id="nl-email" placeholder="your@email.com">
+        <button onclick="brevoSubscribe()">Subscribe</button>
       </div>
+      <div id="nl-msg" style="display:none;margin-top:14px;font-size:14px;font-weight:600;color:var(--accent)"></div>
     </div>
   </div>
   <footer>
@@ -1088,6 +1089,28 @@ var hasAnimated = false;
   });
   hasAnimated = true;
 })();
+
+/* ── BREVO NEWSLETTER ── */
+function brevoSubscribe(){
+  var email = document.getElementById('nl-email').value.trim();
+  var msg = document.getElementById('nl-msg');
+  if(!email || !email.includes('@')){ 
+    msg.style.color='#e05c5c'; msg.textContent='Please enter a valid email.'; msg.style.display='block'; return; 
+  }
+  var formData = new FormData();
+  formData.append('EMAIL', email);
+  formData.append('email_address_check', '');
+  formData.append('locale', 'en');
+  fetch('https://a1cce0bf.sibforms.com/serve/MUIFAJQZ3LFKfQGPf7R5efpGH3QI0QVMOSBM2XBA4bhqmhWc7HyXeC7m92kz7xTVuj0wRaAiwNByG85_VA6OWtIy_EQRjRZs9hk8h1KBLZyJoHgAQtOMPb06oDk18dA-tPCKhopU2H09Ra8tEUUqc1bZRPEycHvgfF7IWrm4cA76e3VDK2OdX7u97mz6UnVTcY3oHMNQXX7ZsoSu4Q==', {
+    method: 'POST', body: formData, mode: 'no-cors'
+  }).then(function(){
+    msg.style.color='var(--accent)'; msg.textContent='🎉 You\'re subscribed!';
+    msg.style.display='block';
+    document.getElementById('nl-email').value='';
+  }).catch(function(){
+    msg.style.color='#e05c5c'; msg.textContent='Something went wrong. Try again.'; msg.style.display='block';
+  });
+}
 
 /* ── INIT ── */
 updateStats();
