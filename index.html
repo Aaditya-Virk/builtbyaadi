@@ -330,6 +330,8 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
   .all-projects-grid{grid-template-columns:repeat(2,1fr)}
   .stats-row{grid-template-columns:repeat(3,1fr)}
   .post-title{font-size:clamp(26px,5vw,42px)}
+  .cert-grid{grid-template-columns:1fr 1fr}
+  .contact-links-grid{grid-template-columns:1fr 1fr}
 }
 
 /* ── MOBILE (580px) ── */
@@ -357,6 +359,12 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
   .post-body-text p{font-size:15px}
   footer{flex-direction:column;text-align:center;gap:12px}
   .footer-links{justify-content:center}
+  .cert-grid{grid-template-columns:1fr}
+  .contact-links-grid{grid-template-columns:1fr}
+  .timeline-item{grid-template-columns:56px 1fr;gap:12px}
+  .timeline-year{font-size:13px}
+  .about-photo-frame{max-width:160px}
+  .container{padding:0 16px}
 }
 
 /* ── CERTIFICATIONS ── */
@@ -486,7 +494,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
     <div class="about-hero">
       <div class="about-photo">
         <div class="about-photo-frame" style="padding:0;overflow:hidden;"><img src="pics/pfp_insta.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:24px;" alt="Aadi Virk"></div>
-        <div class="about-social"> 
+        <div class="about-social">
           <a href="https://github.com/Aaditya-Virk" target="_blank" rel="noopener" class="social-chip">🐙 GitHub</a>
           <a href="https://www.youtube.com/@BuiltByAadiV" target="_blank" rel="noopener" class="social-chip">▶️ YouTube</a>
           <a href="https://www.tiktok.com/@builtbyaadi" target="_blank" rel="noopener" class="social-chip">🎵 TikTok</a>
@@ -531,10 +539,10 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
           <div class="cert-card">
             <div class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
             <div class="cert-body">
-              <div class="cert-name">Machine Learning</div>
-              <div class="cert-issuer">STEM Minds</div>
-              <div class="cert-date">Sep 2024</div>
-              <a href="certs/ML_Cert.pdf" target="_blank" rel="noopener" class="cert-view">View certificate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+              <div class="cert-name">C++ Essentials 1</div>
+              <div class="cert-issuer">Cisco Networking Academy · C++ Institute</div>
+              <div class="cert-date">Mar 2026</div>
+              <a href="certs/C--_Essentials_1_certificate_4608658e-121a-47ba-b09c-b0be2d650fa4.pdf" target="_blank" rel="noopener" class="cert-view">View certificate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
             </div>
           </div>
           <div class="cert-card">
@@ -544,6 +552,15 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
               <div class="cert-issuer">STEM Minds</div>
               <div class="cert-date">Sep 2024</div>
               <a href="certs/AI_Cert.pdf" target="_blank" rel="noopener" class="cert-view">View certificate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+            </div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+            <div class="cert-body">
+              <div class="cert-name">Machine Learning</div>
+              <div class="cert-issuer">STEM Minds</div>
+              <div class="cert-date">Sep 2024</div>
+              <a href="certs/ML_Cert.pdf" target="_blank" rel="noopener" class="cert-view">View certificate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
             </div>
           </div>
           <div class="cert-card">
@@ -650,7 +667,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
         <h1>Let's <span style="color:var(--accent);font-style:italic">talk.</span></h1>
         <p>Have a project idea, collab proposal, or just want to say hi? Always happy to hear from fellow makers.</p>
         <div class="contact-links">
-          <a href="/cdn-cgi/l/email-protection#aeccdbc7c2daccd7cfcfcac7eec9c3cfc7c280cdc1c3" class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p><span class="__cf_email__" data-cfemail="2446514d4850465d4545404d644349454d480a474b49">[email&#160;protected]</span></p></div></a>
+          <a href="mailto:builtbyaadi@gmail.com" class="contact-link-card"><div class="contact-icon">✉️</div><div class="contact-info"><h4>Email</h4><p>builtbyaadi@gmail.com</p></div></a>
           <a href="https://www.instagram.com/builtbyaadi_/" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">📸</div><div class="contact-info"><h4>Instagram</h4><p>@builtbyaadi_</p></div></a>
           <a href="https://github.com/Aaditya-Virk" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🐙</div><div class="contact-info"><h4>GitHub</h4><p>github.com/Aaditya-Virk</p></div></a>
           <a href="https://www.youtube.com/@BuiltByAadiV" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">▶️</div><div class="contact-info"><h4>YouTube</h4><p>@BuiltByAadiV</p></div></a>
