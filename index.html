@@ -267,8 +267,10 @@ nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);display:flex;align-i
 .post-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);line-height:1.1;letter-spacing:-.5px;color:var(--ink);margin-bottom:20px}
 .post-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .post-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--muted);flex-shrink:0}
+/* read time badge — more prominent */
 .post-read-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600}
 .post-read-badge svg{width:12px;height:12px}
+/* copy link button */
 .copy-link-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Epilogue',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;margin-top:4px}
 .copy-link-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .copy-link-btn svg{width:13px;height:13px}
@@ -303,31 +305,15 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
 .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 
 /* ── MOBILE MENU ── */
-.mobile-menu{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;background:var(--surface);z-index:501;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:24px;overflow-y:auto}
+.mobile-menu{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;background:var(--surface);z-index:501;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;justify-content:space-between;padding:24px;overflow-y:auto}
 .mobile-menu.open{transform:translateX(0)}
 .mobile-menu-close{align-self:flex-end;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;margin-bottom:32px;transition:all .15s}
 .mobile-menu-close:hover{color:var(--ink);border-color:var(--ink)}
 .mobile-nav{display:flex;flex-direction:column;gap:4px;flex:1}
-
-/* ── MOBILE NAV LINK — default hidden, animates in when menu opens ── */
-.mobile-nav-link{padding:14px 18px;border-radius:12px;border:none;background:transparent;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;transition:background .15s,color .15s;letter-spacing:-.3px;opacity:0}
+.mobile-nav-link{padding:14px 18px;border-radius:12px;border:none;background:transparent;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;transition:all .15s;letter-spacing:-.3px}
 .mobile-nav-link:hover{background:var(--bg2);color:var(--accent)}
-/* Active page highlight */
-.mobile-nav-link.active{color:var(--accent);background:var(--accent-soft)}
-
-/* Staggered slide-in animation when menu opens */
-@keyframes menuLinkIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
-.mobile-menu.open .mobile-nav-link{animation:menuLinkIn .3s ease forwards}
-.mobile-menu.open .mobile-nav-link:nth-child(1){animation-delay:.05s}
-.mobile-menu.open .mobile-nav-link:nth-child(2){animation-delay:.1s}
-.mobile-menu.open .mobile-nav-link:nth-child(3){animation-delay:.15s}
-.mobile-menu.open .mobile-nav-link:nth-child(4){animation-delay:.2s}
-.mobile-menu.open .mobile-nav-link:nth-child(5){animation-delay:.25s}
-
 .mobile-menu-footer{padding-top:24px;border-top:1px solid var(--border)}
-
-/* Stronger overlay blur */
-.mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:500;opacity:0;pointer-events:none;transition:opacity .4s}
+.mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s}
 .mobile-overlay.open{opacity:1;pointer-events:all}
 
 /* ── TABLET (880px) ── */
@@ -673,6 +659,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
 </div>
 
 <!-- CONTACT -->
+<!-- ── FORMSPREE: replace YOUR_FORM_ID with the ID from formspree.io ── -->
 <div class="page" id="page-contact">
   <div class="container">
     <div class="contact-hero">
@@ -686,6 +673,7 @@ footer{border-top:1px solid var(--border);padding:36px clamp(20px,5vw,80px);disp
           <a href="https://www.youtube.com/@BuiltByAadiV" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">▶️</div><div class="contact-info"><h4>YouTube</h4><p>@BuiltByAadiV</p></div></a>
           <a href="https://www.tiktok.com/@builtbyaadi" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">🎵</div><div class="contact-info"><h4>TikTok</h4><p>@builtbyaadi</p></div></a>
           <a href="https://www.linkedin.com/in/aaditya-virk-116190274/" target="_blank" rel="noopener" class="contact-link-card"><div class="contact-icon">💼</div><div class="contact-info"><h4>LinkedIn</h4><p>aaditya-virk</p></div></a>
+          
         </div>
       </div>
       <div class="contact-form">
@@ -814,7 +802,7 @@ var SKILLS = [
   'QMK / VIAL','KiCad','Soldering',
 ];
 
-/* YouTube channel ID */
+/* YouTube channel ID — find it: youtube.com → profile → Settings → Advanced settings */
 var YT_CHANNEL_ID = 'UCKVnnsvIPKKkvjsuzu2N-dA';
 var YT_MAX = 3;
 
@@ -846,13 +834,6 @@ function showPage(name, skipHistory){
   document.getElementById('page-'+name).classList.add('active');
   var idx=['home','about','projects','blog','contact'].indexOf(name);
   if(idx>-1) document.querySelectorAll('.nav-link')[idx].classList.add('active');
-  document.querySelectorAll('.mobile-nav-link').forEach(function(l){l.classList.remove('active')});
-  if(idx>-1) document.querySelectorAll('.mobile-nav-link')[idx].classList.add('active');
-
-  /* ── UPDATE MOBILE ACTIVE LINK ── */
-  document.querySelectorAll('.mobile-nav-link').forEach(function(l){l.classList.remove('active')});
-  if(idx>-1) document.querySelectorAll('.mobile-nav-link')[idx].classList.add('active');
-
   window.scrollTo(0,0);
   updateProgressBar();
   if(name==='projects') renderProjects('all');
@@ -866,6 +847,7 @@ function showPage(name, skipHistory){
       });
     }
   }
+  /* push a history entry so the browser back button works */
   if(!skipHistory){
     try{history.pushState({page:name},'','#'+name);}catch(e){}
   }
@@ -888,10 +870,15 @@ function updateProgressBar(){
   var btn=document.getElementById('back-to-top');
   var activePage=document.querySelector('.page.active');
   if(!activePage){bar.style.width='0%';bar.classList.remove('visible');btn.classList.remove('visible');return}
+
+  // Only show progress bar on post page
   var onPost=activePage.id==='page-post';
   if(onPost){ bar.classList.add('visible'); } else { bar.classList.remove('visible'); bar.style.width='0%'; }
+
+  // Back to top shows on any page after 400px scroll
   var scrolled=window.scrollY||document.documentElement.scrollTop;
   if(scrolled>400){ btn.classList.add('visible'); } else { btn.classList.remove('visible'); }
+
   if(onPost){
     var docH=document.documentElement.scrollHeight-window.innerHeight;
     bar.style.width=(docH>0?Math.min(100,(scrolled/docH)*100):0)+'%';
@@ -972,7 +959,7 @@ function filterProjects(btn,cat){
 
 /* ── POST DETAIL ── */
 var currentPostId=null;
-var postSource='projects';
+var postSource='projects'; /* tracks which page the user came from */
 
 function goBackFromPost(){ showPage(postSource); }
 
@@ -981,25 +968,32 @@ function openPost(id, skipHistory){
   getAllPosts().forEach(function(p){if(p.id===id)post=p});
   if(!post)return;
   currentPostId=id;
+
+  /* determine source page from post type */
   var isBlog = BLOG_POSTS.some(function(p){ return p.id===id; });
   postSource = isBlog ? 'blog' : 'projects';
   var backLabel = isBlog ? 'Back to Blog' : 'Back to Projects';
   document.getElementById('post-back-label').textContent = backLabel;
   document.getElementById('post-back-label-bottom').textContent = backLabel;
+
   document.getElementById('post-view-tag').textContent=post.tag;
   document.getElementById('post-view-title').textContent=post.title;
   document.getElementById('post-view-date').textContent=post.date;
   document.getElementById('post-read-text').textContent=post.read;
   document.getElementById('post-view-emoji').textContent=post.emoji;
+
   var body=(post.body||post.desc||'').trim();
   var paras=body.split(/\n\s*\n/).filter(function(s){return s.trim()});
   if(!paras.length) paras=[post.desc||''];
   document.getElementById('post-view-body').innerHTML=paras.map(function(s){
     return '<p>'+s.replace(/\n/g,'<br>')+'</p>';
   }).join('');
+
+  // Reset copy link button
   var copyBtn=document.getElementById('copy-link-btn');
   copyBtn.classList.remove('copied');
   copyBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy link';
+
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
   document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active')});
   document.getElementById('page-post').classList.add('active');
@@ -1020,6 +1014,7 @@ function copyPostLink(){
       btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy link';
     },2500);
   }).catch(function(){
+    // fallback for older browsers
     var ta=document.createElement('textarea');
     ta.value=window.location.href.split('#')[0]+'#post-'+currentPostId;
     document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
@@ -1034,21 +1029,30 @@ function handleFormSubmit(e){
   var error=document.getElementById('form-error');
   btn.textContent='Sending...';btn.disabled=true;
   success.style.display='none';error.style.display='none';
+
   fetch(e.target.action,{
     method:'POST',
     body:new FormData(e.target),
     headers:{'Accept':'application/json'}
   }).then(function(r){
-    if(r.ok){ success.style.display='block'; e.target.reset(); }
-    else{ error.style.display='block'; }
-  }).catch(function(){ error.style.display='block'; })
-  .finally(function(){ btn.textContent='Send Message →';btn.disabled=false; });
+    if(r.ok){
+      success.style.display='block';
+      e.target.reset();
+    }else{
+      error.style.display='block';
+    }
+  }).catch(function(){
+    error.style.display='block';
+  }).finally(function(){
+    btn.textContent='Send Message →';btn.disabled=false;
+  });
 }
 
 /* ── YOUTUBE ── */
 function fetchYouTubeVideos(){
   var grid=document.getElementById('yt-grid');
   if(!grid)return;
+
   if(YT_CHANNEL_ID==='YOUR_CHANNEL_ID'){
     grid.innerHTML=[
       {title:'Building My First Custom PCB',date:'Mar 2023'},
@@ -1062,6 +1066,7 @@ function fetchYouTubeVideos(){
     }).join('');
     return;
   }
+
   var rss='https://www.youtube.com/feeds/videos.xml?channel_id='+YT_CHANNEL_ID;
   var url='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss)+'&count='+YT_MAX;
   fetch(url)
@@ -1083,7 +1088,7 @@ function fetchYouTubeVideos(){
     .catch(function(){grid.innerHTML='<div class="yt-error">Couldn\'t load videos right now.</div>'});
 }
 
-/* ── LOAD ANIMATIONS ── */
+/* ── LOAD ANIMATIONS — runs once only on first page open ── */
 var hasAnimated = false;
 (function(){
   var logo = document.getElementById('nav-logo');
@@ -1094,6 +1099,7 @@ var hasAnimated = false;
   }).join('');
   var dotDelay = (text.length * 0.055 + 0.15).toFixed(2);
   logo.innerHTML = lettered + '<span class="dot" style="animation-delay:'+dotDelay+'s">.</span>';
+
   var navBase = parseFloat(dotDelay) + 0.1;
   document.querySelectorAll('.nav-links .nav-link').forEach(function(el, i){
     el.classList.add('nav-anim');
@@ -1101,6 +1107,7 @@ var hasAnimated = false;
   });
   var themeBtn = document.querySelector('.nav-controls .theme-btn');
   if(themeBtn){ themeBtn.classList.add('nav-anim'); themeBtn.style.animationDelay = (navBase + 4 * 0.07)+'s'; }
+
   var heroBase = navBase + 0.2;
   ['.hero-eyebrow','.hero-title','.hero-desc','.btn-row','.hero-visual'].forEach(function(sel, i){
     var el = document.querySelector(sel);
@@ -1113,8 +1120,8 @@ var hasAnimated = false;
 function brevoSubscribe(){
   var email = document.getElementById('nl-email').value.trim();
   var msg = document.getElementById('nl-msg');
-  if(!email || !email.includes('@')){
-    msg.style.color='#e05c5c'; msg.textContent='Please enter a valid email.'; msg.style.display='block'; return;
+  if(!email || !email.includes('@')){ 
+    msg.style.color='#e05c5c'; msg.textContent='Please enter a valid email.'; msg.style.display='block'; return; 
   }
   var formData = new FormData();
   formData.append('EMAIL', email);
@@ -1137,8 +1144,6 @@ renderSkills();
 renderFeatured();
 renderProjects('all');
 fetchYouTubeVideos();
-/* Set Home as active in mobile nav on load */
-document.querySelectorAll('.mobile-nav-link')[0].classList.add('active');
 try{history.replaceState({page:'home'},'','#home');}catch(e){}
 </script>
 </body>
