@@ -846,6 +846,8 @@ function showPage(name, skipHistory){
   document.getElementById('page-'+name).classList.add('active');
   var idx=['home','about','projects','blog','contact'].indexOf(name);
   if(idx>-1) document.querySelectorAll('.nav-link')[idx].classList.add('active');
+  document.querySelectorAll('.mobile-nav-link').forEach(function(l){l.classList.remove('active')});
+  if(idx>-1) document.querySelectorAll('.mobile-nav-link')[idx].classList.add('active');
 
   /* ── UPDATE MOBILE ACTIVE LINK ── */
   document.querySelectorAll('.mobile-nav-link').forEach(function(l){l.classList.remove('active')});
